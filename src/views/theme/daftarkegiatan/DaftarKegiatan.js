@@ -1,8 +1,11 @@
-import React from 'react'
-import { CCard, CTable, CCardHeader, CCardBody } from '@coreui/react'
+import PropTypes from 'prop-types'
+import React, { useEffect, useState, createRef } from 'react'
+import classNames from 'classnames'
+import { CRow, CCol, CCard, CCardHeader, CCardBody, CTable } from '@coreui/react'
+import { rgbToHex } from '@coreui/utils'
 import { DocsLink } from 'src/components'
 
-const Typography = () => {
+const DaftarKegiatan = () => {
   const columns = [
     {
       key: 'id',
@@ -35,8 +38,8 @@ const Typography = () => {
       _props: { scope: 'col' },
     },
     {
-      key: 'progress',
-      label: 'Progress',
+      key: 'status',
+      label: 'Status',
       _props: { scope: 'col' },
     },
   ]
@@ -48,7 +51,7 @@ const Typography = () => {
       anggaran: '125000000',
       mulai: '17-10-2022',
       selesai: '18-11-2022',
-      progress: 25,
+      status: 'Dalam Proses',
       _cellProps: { id: { scope: 'row' } },
     },
     {
@@ -58,7 +61,7 @@ const Typography = () => {
       anggaran: '125000000',
       mulai: '17-10-2022',
       selesai: '18-11-2022',
-      progress: 25,
+      status: 'Selesai',
       _cellProps: { id: { scope: 'row' } },
     },
     {
@@ -68,7 +71,7 @@ const Typography = () => {
       anggaran: '125000000',
       mulai: '17-10-2022',
       selesai: '18-11-2022',
-      progress: 25,
+      status: 'Tertunda',
       _cellProps: { id: { scope: 'row' } },
     },
   ]
@@ -81,4 +84,4 @@ const Typography = () => {
   )
 }
 
-export default Typography
+export default DaftarKegiatan

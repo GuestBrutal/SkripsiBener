@@ -5,7 +5,7 @@ import { CRow, CCol, CCard, CCardHeader, CCardBody, CTable } from '@coreui/react
 import { rgbToHex } from '@coreui/utils'
 import { DocsLink } from 'src/components'
 
-const Colors = () => {
+const Tim = () => {
   const columns = [
     {
       key: 'id',
@@ -18,70 +18,54 @@ const Colors = () => {
       _props: { scope: 'col' },
     },
     {
-      key: 'lokasi',
-      label: 'Lokasi',
+      key: 'jabatan',
+      label: 'Jabatan',
       _props: { scope: 'col' },
     },
     {
-      key: 'anggaran',
-      label: 'RAB',
+      key: 'email',
+      label: 'Email',
       _props: { scope: 'col' },
     },
     {
-      key: 'mulai',
-      label: 'Tanggal Mulai',
-      _props: { scope: 'col' },
-    },
-    {
-      key: 'selesai',
-      label: 'Tanggal Selesai',
-      _props: { scope: 'col' },
-    },
-    {
-      key: 'status',
-      label: 'Status',
+      key: 'ponsel',
+      label: 'No HP',
       _props: { scope: 'col' },
     },
   ]
   const items = [
     {
       id: 1,
-      nama: 'Penanganan Bencana Banjir',
-      lokasi: 'Bandar Lampung',
-      anggaran: '125000000',
-      mulai: '17-10-2022',
-      selesai: '18-11-2022',
-      status: 'Dalam Proses',
+      nama: 'Doni',
+      jabatan: 'Ketua Tim',
+      email: 'acron@gmail.com',
+      ponsel: '085161240041',
       _cellProps: { id: { scope: 'row' } },
     },
     {
       id: 2,
-      nama: 'Penanganan Bencana Banjir',
-      lokasi: 'Bandar Lampung',
-      anggaran: '125000000',
-      mulai: '17-10-2022',
-      selesai: '18-11-2022',
-      status: 'Selesai',
+      nama: 'Krisna',
+      jabatan: 'Anggota',
+      email: 'kmbrps@gmail.com',
+      ponsel: '082282240041',
       _cellProps: { id: { scope: 'row' } },
     },
     {
       id: 3,
-      nama: 'Penanganan Bencana Banjir',
-      lokasi: 'Bandar Lampung',
-      anggaran: '125000000',
-      mulai: '17-10-2022',
-      selesai: '18-11-2022',
-      status: 'Tertunda',
+      nama: 'Imam',
+      jabatan: 'Anggotaa',
+      email: 'imamakbar@gmail.com',
+      ponsel: '085182240041',
       _cellProps: { id: { scope: 'row' } },
     },
   ]
 
   return (
     <CCard className="p-4" sm={6}>
-      <h4>Daftar Kegiatan</h4>
+      <h4>Anggota Tim</h4>
       <CTable columns={columns} items={items} />
     </CCard>
   )
 }
 
-export default Colors
+export default Tim

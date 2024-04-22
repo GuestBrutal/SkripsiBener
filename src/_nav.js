@@ -14,41 +14,53 @@ import {
   cilSpeedometer,
   cilStar,
   cilNoteAdd,
+  cilInfo,
+  cilHome,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
-    component: CNavItem,
+    component: CNavTitle,
     name: 'Dashboard',
-    to: '/dashboard',
+  },
+  {
+    component: CNavItem,
+    name: 'Beranda',
+    to: '/theme/beranda',
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Dashboard Admin',
+    to: '/dashboard/admin',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavTitle,
+    name: 'User',
+  },
+  {
+    component: CNavItem,
+    name: 'Detail',
+    to: '/dashboard/user',
+    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
     badge: {
       color: 'info',
       text: 'NEW',
     },
   },
   {
-    component: CNavTitle,
-    name: 'Utama',
-  },
-  {
     component: CNavItem,
     name: 'Daftar Kegiatan',
-    to: '/theme/colors',
+    to: '/theme/daftarkegiatan',
     icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Tugas',
-    to: '/theme/typography',
-    icon: <CIcon icon={cilCalendarCheck} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Agenda',
-    to: '/theme/colors',
-    icon: <CIcon icon={cilCalendar} customClassName="nav-icon" />,
+    name: 'Target',
+    to: '/theme/target',
+    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
   },
   {
     component: CNavTitle,
@@ -62,98 +74,21 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Accordion',
+        name: 'Pemasukan',
         to: '/base/accordion',
       },
       {
         component: CNavItem,
-        name: 'Breadcrumb',
+        name: 'Pengeluaran',
         to: '/base/breadcrumbs',
-      },
-      {
-        component: CNavItem,
-        name: 'Cards',
-        to: '/base/cards',
-      },
-      {
-        component: CNavItem,
-        name: 'Carousel',
-        to: '/base/carousels',
-      },
-      {
-        component: CNavItem,
-        name: 'Collapse',
-        to: '/base/collapses',
-      },
-      {
-        component: CNavItem,
-        name: 'List group',
-        to: '/base/list-groups',
-      },
-      {
-        component: CNavItem,
-        name: 'Navs & Tabs',
-        to: '/base/navs',
-      },
-      {
-        component: CNavItem,
-        name: 'Pagination',
-        to: '/base/paginations',
-      },
-      {
-        component: CNavItem,
-        name: 'Placeholders',
-        to: '/base/placeholders',
-      },
-      {
-        component: CNavItem,
-        name: 'Popovers',
-        to: '/base/popovers',
-      },
-      {
-        component: CNavItem,
-        name: 'Progress',
-        to: '/base/progress',
-      },
-      {
-        component: CNavItem,
-        name: 'Spinners',
-        to: '/base/spinners',
-      },
-      {
-        component: CNavItem,
-        name: 'Tables',
-        to: '/base/tables',
-      },
-      {
-        component: CNavItem,
-        name: 'Tooltips',
-        to: '/base/tooltips',
       },
     ],
   },
   {
-    component: CNavGroup,
+    component: CNavItem,
     name: 'Tim',
-    to: '/buttons',
+    to: '/tim',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Buttons',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: 'Buttons groups',
-        to: '/buttons/button-groups',
-      },
-      {
-        component: CNavItem,
-        name: 'Dropdowns',
-        to: '/buttons/dropdowns',
-      },
-    ],
   },
   {
     component: CNavGroup,

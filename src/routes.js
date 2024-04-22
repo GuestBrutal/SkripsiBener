@@ -1,9 +1,11 @@
 import React from 'react'
 import LaporanHarian from './views/laporan/harian/LaporanHarian'
 
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
-const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+const DashboardUser = React.lazy(() => import('./views/dashboard/dashboarduser/DashboardUser'))
+const DashboardAdmin = React.lazy(() => import('./views/dashboard/dashboardadmin/DashboardAdmin'))
+const Beranda = React.lazy(() => import('./views/theme/beranda/Beranda'))
+const DaftarKegiatan = React.lazy(() => import('./views/theme/daftarkegiatan/DaftarKegiatan'))
+const Target = React.lazy(() => import('./views/theme/target/Target'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -22,7 +24,7 @@ const Tables = React.lazy(() => import('./views/base/tables/Tables'))
 const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
 
 // Buttons
-const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
+const Tim = React.lazy(() => import('./views/tim/Tim'))
 const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
 const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
 
@@ -53,10 +55,12 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/theme', name: 'Theme', element: Colors, exact: true },
-  { path: '/theme/colors', name: 'Colors', element: Colors },
-  { path: '/theme/typography', name: 'Typography', element: Typography },
+  { path: '/dashboard/admin', name: 'Dashboard Admin', element: DashboardAdmin },
+  { path: '/dashboard/user', name: 'Dashboard User', element: DashboardUser },
+  { path: '/theme', name: 'Theme', element: DaftarKegiatan, exact: true },
+  { path: '/theme/beranda', name: 'Beranda', element: Beranda },
+  { path: '/theme/daftarkegiatan', name: 'Daftar Kegiatan', element: DaftarKegiatan },
+  { path: '/theme/target', name: 'Target', element: Target },
   { path: '/base', name: 'Base', element: Cards, exact: true },
   { path: '/base/accordion', name: 'Accordion', element: Accordion },
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', element: Breadcrumbs },
@@ -72,8 +76,8 @@ const routes = [
   { path: '/base/spinners', name: 'Spinners', element: Spinners },
   { path: '/base/tables', name: 'Tables', element: Tables },
   { path: '/base/tooltips', name: 'Tooltips', element: Tooltips },
-  { path: '/buttons', name: 'Buttons', element: Buttons, exact: true },
-  { path: '/buttons/buttons', name: 'Buttons', element: Buttons },
+  { path: '/tim', name: 'Tim', element: Tim, exact: true },
+  { path: '/tim', name: 'Data Tim', element: Tim },
   { path: '/buttons/dropdowns', name: 'Dropdowns', element: Dropdowns },
   { path: '/buttons/button-groups', name: 'Button Groups', element: ButtonGroups },
   { path: '/charts', name: 'Charts', element: Charts },

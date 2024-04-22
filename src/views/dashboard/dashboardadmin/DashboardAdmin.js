@@ -52,30 +52,20 @@ import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
 
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
+import WidgetsBrand from '../../widgets/WidgetsBrand'
+import WidgetsDropdownAdmin from '../../widgets/WidgetsDropdownAdmin'
 
-const Dashboard = () => {
+const DashboardAdmin = () => {
   return (
     <>
-      <WidgetsDropdown />
+      <WidgetsDropdownAdmin />
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                RAB / Realisasi
+                Laporan Pengeluaran
               </h4>
-              <CRow>
-                <CCol xs={6}>
-                  <div className="text-medium-emphasis small">RAB</div>
-                  <div className="small text-medium-emphasis">15.000.000</div>
-                </CCol>
-                <CCol xs={6} className="text-end">
-                  <div className="success-emphasis small">Realisasi</div>
-                  <div className="small text-medium-emphasis">9.500.000</div>
-                </CCol>
-              </CRow>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
@@ -89,30 +79,12 @@ const Dashboard = () => {
               labels: ['January', 'February', 'March'],
               datasets: [
                 {
-                  label: 'RAB',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
-                  borderColor: getStyle('--cui-info'),
-                  pointHoverBackgroundColor: getStyle('--cui-info'),
-                  borderWidth: 2,
-                  data: [5000000, 5000000, 5000000],
-                  fill: true,
-                },
-                {
                   label: 'Realisasi',
                   backgroundColor: 'transparent',
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  data: [2500000, 3000000, 4000000],
-                },
-                {
-                  label: 'My Third dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-danger'),
-                  pointHoverBackgroundColor: getStyle('--cui-danger'),
-                  borderWidth: 1,
-                  borderDash: [8, 5],
-                  data: [65, 65, 65, 65, 65, 65, 65],
+                  data: [2500000, 10000000, 4000000],
                 },
               ],
             }}
@@ -252,4 +224,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default DashboardAdmin
