@@ -75,12 +75,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Pemasukan',
-        to: '/base/accordion',
+        to: '/keuangan/pemasukan',
       },
       {
         component: CNavItem,
         name: 'Pengeluaran',
-        to: '/base/breadcrumbs',
+        to: '/keuangan/pengeluaran',
       },
     ],
   },

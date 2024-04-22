@@ -8,8 +8,8 @@ const DaftarKegiatan = React.lazy(() => import('./views/theme/daftarkegiatan/Daf
 const Target = React.lazy(() => import('./views/theme/target/Target'))
 
 // Base
-const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
+const Pemasukan = React.lazy(() => import('./views/keuangan/pemasukan/pemasukan'))
+const Pengeluaran = React.lazy(() => import('./views/keuangan/pengeluaran/pengeluaran'))
 const Cards = React.lazy(() => import('./views/base/cards/Cards'))
 const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
 const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
@@ -62,8 +62,8 @@ const routes = [
   { path: '/theme/daftarkegiatan', name: 'Daftar Kegiatan', element: DaftarKegiatan },
   { path: '/theme/target', name: 'Target', element: Target },
   { path: '/base', name: 'Base', element: Cards, exact: true },
-  { path: '/base/accordion', name: 'Accordion', element: Accordion },
-  { path: '/base/breadcrumbs', name: 'Breadcrumbs', element: Breadcrumbs },
+  { path: '/keuangan/pemasukan', name: 'Pemasukan', element: Pemasukan },
+  { path: '/keuangan/pengeluaran', name: 'Pengeluaran', element: Pengeluaran },
   { path: '/base/cards', name: 'Cards', element: Cards },
   { path: '/base/carousels', name: 'Carousel', element: Carousels },
   { path: '/base/collapses', name: 'Collapse', element: Collapses },

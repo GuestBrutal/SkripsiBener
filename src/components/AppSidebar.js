@@ -3,7 +3,24 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-
+import {
+  cilBell,
+  cilCalculator,
+  cilChartPie,
+  cilPeople,
+  cilDescription,
+  cilCalendar,
+  cilCalendarCheck,
+  cilNotes,
+  cilList,
+  cilCash,
+  cilSpeedometer,
+  cilStar,
+  cilNoteAdd,
+  cilInfo,
+  cilHome,
+  cifId,
+} from '@coreui/icons'
 import { AppSidebarNav } from './AppSidebarNav'
 
 import { logoNegative } from 'src/assets/brand/logo-negative'
@@ -30,8 +47,14 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
-        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
+        <CIcon className="sidebar-brand-full" icon={cifId} height={35} />
+        <center>
+          <p className="p-2">
+            Manajemen Relawan
+            <br />
+            Indonesia
+          </p>
+        </center>
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
