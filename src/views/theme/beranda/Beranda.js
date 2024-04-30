@@ -8,10 +8,10 @@ import relawan from 'src/assets/images/relawan.jpg'
 
 const Beranda = () => {
   return (
-    <CCard>
+    <div style={{ backgroundColor: 'white', borderRadius: '10px' }}>
       <CRow>
         <CCol sm={6}>
-          <CCard className="p-4" sm={6}>
+          <CCard className="p-4" sm={6} style={{ border: 'none' }}>
             <h3>
               Mari Bergabung Menjadi
               <b> Relawan</b>
@@ -45,13 +45,13 @@ const Beranda = () => {
           </CCard>
         </CCol>
         <CCol>
-          <CCard className="p-4" sm={6}>
+          <CCard className="p-4" sm={6} style={{ border: 'none' }}>
             <CImage fluid src={relawan} />
             <CImage fluid src={relawan} />
           </CCard>
         </CCol>
       </CRow>
-    </CCard>
+    </div>
   )
 }
 

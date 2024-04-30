@@ -1,97 +1,67 @@
-import React from 'react'
-import { CCard, CCardBody, CCardHeader, CCol, CFormSelect, CRow } from '@coreui/react'
-import { DocsExample } from 'src/components'
+import React, { useState } from 'react'
+import { CCard, CCardBody, CCardHeader, CCol, CFormSelect, CRow, CModal, CModalHeader, CModalBody, CModalFooter, CButton, CProgressBar } from '@coreui/react'
 
 const Select = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(0);
+
   return (
     <CRow>
-      <CCol xs={12}>
-        <CCard className="mb-4">
+      <CCol sm="4" style={{ height: '100vh', overflow: 'hidden' }}>
+        <CCard>
           <CCardHeader>
-            <strong>React Select</strong> <small>Default</small>
+            Informasi Kegiatan
           </CCardHeader>
           <CCardBody>
-            <DocsExample href="forms/select">
-              <CFormSelect aria-label="Default select example">
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-            </DocsExample>
+            Judul Kegiatan: Kegiatan Hari {selectedDay}
+            <br />
+            Deskripsi: Deskripsi kegiatan yang sedang berjalan.
+            <br />
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Select</strong> <small>Sizing</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-medium-emphasis small">
-              You may also choose from small and large custom selects to match our similarly sized
-              text inputs.
-            </p>
-            <DocsExample href="forms/select#sizing">
-              <CFormSelect size="lg" className="mb-3" aria-label="Large select example">
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-              <CFormSelect size="sm" className="mb-3" aria-label="Small select example">
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-            </DocsExample>
-            <p className="text-medium-emphasis small">
-              The <code>multiple</code> attribute is also supported:
-            </p>
-            <DocsExample href="forms/select#sizing">
-              <CFormSelect size="lg" multiple aria-label="Multiple select example">
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-            </DocsExample>
-            <p className="text-medium-emphasis small">
-              As is the <code>htmlSize</code> property:
-            </p>
-            <DocsExample href="forms/select#sizing">
-              <CFormSelect size="lg" multiple aria-label="Multiple select example">
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-            </DocsExample>
-          </CCardBody>
-        </CCard>
+      <CCol sm="8" style={{ height: '100vh', overflowY: 'auto' }}>
+        {Array.from({ length: 7 }, (_, i) => (
+          <CCard key={i} className="mb-2">
+            <CCardHeader>
+              Hari {i + 1}
+            </CCardHeader>
+            <CCardBody>
+              <button type="button" className="btn btn-primary" onClick={() => { setShowModal(true); setSelectedDay(i + 1) }}>
+                Isi Laporan
+              </button>
+            </CCardBody>
+          </CCard>
+        ))}
       </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Select</strong> <small>Disabled</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-medium-emphasis small">
-              Add the <code>disabled</code> boolean attribute on a select to give it a grayed out
-              appearance and remove pointer events.
-            </p>
-            <DocsExample href="forms/select#disabled">
-              <CFormSelect aria-label="Disabled select example" disabled>
-                <option>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </CFormSelect>
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
+      <CModal visible={showModal} onClose={() => setShowModal(false)}>
+        <CModalHeader closeButton>
+          Laporan Hari {selectedDay}
+        </CModalHeader>
+        <CModalBody>
+          <form>
+            <div className="mb-3">
+              <label htmlFor="activityName" className="form-label">Nama Kegiatan</label>
+              <input type="text" className="form-control" id="activityName" />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="location" className="form-label">Lokasi</label>
+              <input type="text" className="form-control" id="location" />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="teamLead" className="form-label">Ketua Tim</label>
+              <input type="text" className="form-control" id="teamLead" />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">Deskripsi</label>
+              <textarea className="form-control" id="description" rows="3"></textarea>
+            </div>
+          </form>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="success" onClick={() => setShowModal(false)}>Submit</CButton>
+        </CModalFooter>
+      </CModal>
     </CRow>
   )
 }
