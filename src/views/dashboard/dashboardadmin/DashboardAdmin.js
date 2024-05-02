@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
   CAvatar,
@@ -17,6 +17,15 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+  CForm,
+  CFormInput,
+  CFormLabel,
+  CFormTextarea,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
 import { CChartBar } from '@coreui/react-chartjs'
@@ -56,9 +65,37 @@ import WidgetsBrand from '../../widgets/WidgetsBrand'
 import WidgetsDropdownAdmin from '../../widgets/WidgetsDropdownAdmin'
 
 const DashboardAdmin = () => {
+  const [visible, setVisible] = useState(false);
+
   return (
     <>
       <WidgetsDropdownAdmin />
+      <CButton color="success" onClick={() => setVisible(!visible)}>
+        Tambah Kegiatan
+      </CButton>
+      <CModal visible={visible} onClose={() => setVisible(false)}>
+        <CModalHeader>
+          <CModalTitle>Tambah Kegiatan</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CForm>
+            <div className="mb-3">
+              <CFormLabel htmlFor="activityName">Nama Kegiatan</CFormLabel>
+              <CFormInput type="text" id="activityName" />
+            </div>
+            <div className="mb-3">
+              <CFormLabel htmlFor="activityDescription">Deskripsi Kegiatan</CFormLabel>
+              <CFormTextarea id="activityDescription" rows="3"></CFormTextarea>
+            </div>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setVisible(false)}>
+            Tutup
+          </CButton>
+          <CButton color="primary">Simpan Kegiatan</CButton>
+        </CModalFooter>
+      </CModal>
       <CCard className="mb-4">
         <CCardBody>
           <CRow>

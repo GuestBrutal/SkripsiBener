@@ -1,46 +1,69 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, createRef } from 'react'
 import classNames from 'classnames'
-import { CRow, CCol, CCard, CCardHeader, CCardBody, CTable } from '@coreui/react'
+import { CRow, CCol, CCard, CCardHeader, CCardBody, CButton } from '@coreui/react'
 import { rgbToHex } from '@coreui/utils'
 import { DocsLink } from 'src/components'
+import DataTable from 'react-data-table-component';
 
 const Tim = () => {
   const columns = [
     {
-      key: 'id',
-      label: 'No',
-      _props: { scope: 'col' },
+      name: 'No',
+      selector: row => row.id,
+      sortable: true,
+      compact: true,
+      width: '10%', // Menetapkan lebar kolom
     },
     {
-      key: 'nama',
-      label: 'Nama Kegiatan',
-      _props: { scope: 'col' },
+      name: 'Nama Kegiatan',
+      selector: row => row.nama,
+      sortable: true,
+      compact: true,
+      width: '25%', // Menetapkan lebar kolom
     },
     {
-      key: 'jabatan',
-      label: 'Jabatan',
-      _props: { scope: 'col' },
+      name: 'Jabatan',
+      selector: row => row.jabatan,
+      sortable: true,
+      compact: true,
+      width: '20%', // Menetapkan lebar kolom
     },
     {
-      key: 'email',
-      label: 'Email',
-      _props: { scope: 'col' },
+      name: 'Email',
+      selector: row => row.email,
+      sortable: true,
+      compact: true,
+      width: '20%', // Menetapkan lebar kolom
     },
     {
-      key: 'ponsel',
-      label: 'No HP',
-      _props: { scope: 'col' },
+      name: 'No HP',
+      selector: row => row.ponsel,
+      sortable: true,
+      compact: true,
+      width: '25%', // Menetapkan lebar kolom
+      cell: row => (
+        <>
+          {row.ponsel}
+          <CButton
+            color="success"
+            href={`https://wa.me/62${row.ponsel.substring(1)}`}
+            target="_blank"
+            style={{ marginLeft: '10px', padding: '0.2rem 0.5rem', fontSize: '0.8rem' }}
+          >
+            Hubungi
+          </CButton>
+        </>
+      ),
     },
-  ]
-  const items = [
+  ];
+  const data = [
     {
       id: 1,
       nama: 'Doni',
       jabatan: 'Ketua Tim',
       email: 'acron@gmail.com',
       ponsel: '085161240041',
-      _cellProps: { id: { scope: 'row' } },
     },
     {
       id: 2,
@@ -48,7 +71,6 @@ const Tim = () => {
       jabatan: 'Anggota',
       email: 'kmbrps@gmail.com',
       ponsel: '082282240041',
-      _cellProps: { id: { scope: 'row' } },
     },
     {
       id: 3,
@@ -56,14 +78,13 @@ const Tim = () => {
       jabatan: 'Anggotaa',
       email: 'imamakbar@gmail.com',
       ponsel: '085182240041',
-      _cellProps: { id: { scope: 'row' } },
     },
-  ]
+  ];
 
   return (
     <CCard className="p-4" sm={6}>
       <h4>Anggota Tim</h4>
-      <CTable columns={columns} items={items} />
+      <DataTable columns={columns} data={data} pagination dense />
     </CCard>
   )
 }

@@ -1,1 +1,10 @@
 // Here you can add other styles
+.noScrollbar {
+  // Menggunakan semua vendor prefixes untuk memastikan kompatibilitas lintas browser
+  &::-webkit-scrollbar {
+    display: none!important; // untuk Chrome, Safari, dan Opera
+  }
+  overflow-y: scroll!important;
+  -ms-overflow-style: none!important; // untuk IE dan Edge
+  scrollbar-width: none!important; // untuk Firefox
+}

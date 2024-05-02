@@ -63,6 +63,12 @@ const _nav = [
     icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
   },
   {
+    component: CNavItem,
+    name: 'Charts',
+    to: '/charts',
+    icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
+  },
+  {
     component: CNavTitle,
     name: 'Laporan',
   },
@@ -136,12 +142,6 @@ const _nav = [
         to: '/forms/validation',
       },
     ],
-  },
-  {
-    component: CNavItem,
-    name: 'Charts',
-    to: '/charts',
-    icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
   },
   {
     component: CNavGroup,
