@@ -9,8 +9,8 @@ const Pemasukan = React.lazy(() => import('./views/user/keuangan/pemasukan'))
 const Pengeluaran = React.lazy(() => import('./views/user/keuangan/pengeluaran'))
 const Tim = React.lazy(() => import('./views/user/Tim'))
 const Relawan = React.lazy(() => import('./views/user/Relawan'))
-const LaporanHarian = React.lazy(() => import('./views/user/laporan/LaporanHarian'))
-const LaporanMingguan = React.lazy(() => import('./views/user/laporan/LaporanMingguan'))
+const LaporanHarian = React.lazy(() => import('./views/user/laporan/LaporanMingguan'))
+const LaporanMingguan = React.lazy(() => import('./views/user/laporan/LaporanHarian'))
 const Charts = React.lazy(() => import('./views/charts/Charts'))
 
 

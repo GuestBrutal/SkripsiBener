@@ -39,8 +39,8 @@ const navItems = [
   { name: 'Tim', to: '/user/tim', icon: cilPeople },
   {
     name: 'Laporan', icon: cilNoteAdd, children: [
-      { name: 'Harian', to: '/user/laporan/harian' },
-      { name: 'Mingguan', to: '/user/laporan/mingguan' }
+      { name: 'Mingguan', to: '/user/laporan/harian' },
+      { name: 'Harian', to: '/user/laporan/mingguan' }
     ]
   },
   { name: 'Keluar', to: '/logout' },
