@@ -1,73 +1,173 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import { CRow, CCol, CCard, CFormInput, CInputGroup, CInputGroupText, CBadge, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CForm, CFormLabel, CFormSelect } from '@coreui/react'
 import DataTable from 'react-data-table-component'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilPlus } from '@coreui/icons'
+import { cilSearch, cilPlus, cilPencil, cilTrash } from '@coreui/icons'
 
 const DaftarKegiatan = () => {
+  const url = 'http://localhost:8080/daftar_kegiatan';
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [modalTambah, setModalTambah] = useState(false);
-  const [data, setData] = useState([
-    { id: 1, nama: 'Penanganan Bencana Banjir', lokasi: 'Bandar Lampung', anggaran: 125000000, mulai: '17-10-2022', selesai: '18-11-2022', status: 'Dalam Proses' },
-    { id: 2, nama: 'Penanganan Bencana Gempa', lokasi: 'Lampung Barat', anggaran: 375000000, mulai: '20-10-2022', selesai: '21-11-2022', status: 'Selesai' },
-    { id: 3, nama: 'Penanganan Bencana Tsunami', lokasi: 'Aceh', anggaran: 500000000, mulai: '24-12-2022', selesai: '25-01-2023', status: 'Tertunda' },
-  ]);
+  const [modalEdit, setModalEdit] = useState(false);
+  const [data, setData] = useState([]);
   const [kegiatanBaru, setKegiatanBaru] = useState({
-    nama: '',
+    nama_kegiatan: '',
     lokasi: '',
-    anggaran: 0,
-    mulai: '',
-    selesai: '',
+    rab: 0,
+    tgl_mulai: '',
+    tgl_selesai: '',
     status: ''
   });
+  const [kegiatanEdit, setKegiatanEdit] = useState(null);
 
   useEffect(() => {
-    setFilteredData(data.filter(item => item.nama.toLowerCase().includes(searchText.toLowerCase())));
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        setData(response.data);
+        setFilteredData(response.data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    setFilteredData(data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
   }, [searchText, data]);
 
-  const columns = [
-    { name: 'No', selector: row => row.id, sortable: true, width: '7.5%' },
-    { name: 'Nama Kegiatan', selector: row => row.nama, sortable: true, width: '25%' },
-    { name: 'Lokasi', selector: row => row.lokasi, sortable: true, width: '20%' },
-    {
-      name: 'RAB', selector: row => `Rp. ${row.anggaran.toLocaleString('id-ID')}`, sortable: true
-      , width: '20%'
-    },
-    { name: 'Tanggal Mulai', selector: row => row.mulai, sortable: true, width: '15%' },
-    { name: 'Tanggal Selesai', selector: row => row.selesai, sortable: true, width: '15%' },
-    {
-      name: 'Status',
-      selector: row => {
-        let color = '';
-        if (row.status === 'Dalam Proses') color = 'warning';
-        else if (row.status === 'Selesai') color = 'success';
-        else color = 'danger';
-        return <CBadge color={color}>{row.status}</CBadge>;
-      },
-      sortable: true,
-      width: '13%'
-    },
-  ];
+  const handleTambahKegiatan = async () => {
+    try {
+      const response = await axios.post(url, kegiatanBaru, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 201) {
+        setData([...data, response.data]);
+        setModalTambah(false);
+        setKegiatanBaru({
+          nama_kegiatan: '',
+          lokasi: '',
+          rab: 0,
+          tgl_mulai: '',
+          tgl_selesai: '',
+          status: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error adding activity:', error);
+    }
+  };
 
-  const handleTambahKegiatan = () => {
-    const newId = data.length + 1;
-    const newData = { id: newId, ...kegiatanBaru };
-    setData([...data, newData]);
-    setModalTambah(false);
-    setKegiatanBaru({
-      nama: '',
-      lokasi: '',
-      anggaran: 0,
-      mulai: '',
-      selesai: '',
-      status: ''
-    });
+  const handleEdit = (kegiatan) => {
+    setKegiatanEdit(kegiatan);
+    setModalEdit(true);
+  };
+
+  const handleUpdateKegiatan = async () => {
+    try {
+      const response = await axios.put(`${url}/${kegiatanEdit.id}`, kegiatanEdit, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        const updatedData = data.map(item => item.id === kegiatanEdit.id ? response.data : item);
+        setData(updatedData);
+        setModalEdit(false);
+      }
+    } catch (error) {
+      console.error('Error updating activity:', error);
+    }
+  };
+
+  const handleHapus = async (id) => {
+    try {
+      const response = await axios.delete(`${url}/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        const updatedData = data.filter(item => item.id !== id);
+        setData(updatedData);
+      }
+    } catch (error) {
+      console.error('Error deleting activity:', error);
+    }
   };
 
   const handleChange = (e) => {
+    setKegiatanEdit({ ...kegiatanEdit, [e.target.id]: e.target.value });
     setKegiatanBaru({ ...kegiatanBaru, [e.target.id]: e.target.value });
   };
+
+  const columns = [
+    {
+      name: 'Nama',
+      selector: row => row.nama_kegiatan,
+      sortable: true
+    },
+    {
+      name: 'Lokasi',
+      selector: row => row.lokasi,
+      sortable: true
+    },
+    {
+      name: 'Anggaran',
+      selector: row => row.rab,
+      sortable: true,
+      right: true,
+      format: row => `Rp. ${row.rab.toLocaleString()}`
+    },
+    {
+      name: 'Tanggal Mulai',
+      selector: row => row.tgl_mulai,
+      sortable: true
+    },
+    {
+      name: 'Tanggal Selesai',
+      selector: row => row.tgl_selesai,
+      sortable: true
+    },
+    {
+      name: 'Status',
+      selector: row => row.status,
+      sortable: true,
+      cell: row => <CBadge color={row.status === 'Selesai' ? 'success' : row.status === 'Dalam Proses' ? 'warning' : 'danger'}>{row.status}</CBadge>
+    },
+    {
+      name: 'Aksi',
+      cell: row => (
+        <>
+          <CButton size="sm" color="info" onClick={() => handleEdit(row)}>
+            <CIcon icon={cilPencil} />
+          </CButton>
+          <CButton size="sm" color="danger" onClick={() => handleHapus(row.id)}>
+            <CIcon icon={cilTrash} />
+          </CButton>
+        </>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true
+    }
+  ];
 
   return (
     <CCard className="p-4 m-3" sm={6}>
@@ -120,19 +220,19 @@ const DaftarKegiatan = () => {
         <CModalBody>
           <CForm>
             <CFormLabel htmlFor="nama">Nama Kegiatan</CFormLabel>
-            <CFormInput type="text" id="nama" placeholder="Masukkan nama kegiatan" required value={kegiatanBaru.nama} onChange={handleChange} />
+            <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={kegiatanBaru.nama_kegiatan} onChange={handleChange} />
 
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
             <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanBaru.lokasi} onChange={handleChange} />
 
             <CFormLabel htmlFor="anggaran">Anggaran</CFormLabel>
-            <CFormInput type="number" id="anggaran" placeholder="Masukkan anggaran kegiatan" required value={kegiatanBaru.anggaran} onChange={handleChange} />
+            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" required value={kegiatanBaru.rab} onChange={handleChange} />
 
             <CFormLabel htmlFor="mulai">Tanggal Mulai</CFormLabel>
-            <CFormInput type="date" id="mulai" required value={kegiatanBaru.mulai} onChange={handleChange} />
+            <CFormInput type="date" id="tgl_mulai" required value={kegiatanBaru.tgl_mulai} onChange={handleChange} />
 
             <CFormLabel htmlFor="selesai">Tanggal Selesai</CFormLabel>
-            <CFormInput type="date" id="selesai" required value={kegiatanBaru.selesai} onChange={handleChange} />
+            <CFormInput type="date" id="tgl_selesai" required value={kegiatanBaru.tgl_selesai} onChange={handleChange} />
 
             <CFormLabel htmlFor="status">Status</CFormLabel>
             <CFormSelect id="status" required value={kegiatanBaru.status} onChange={handleChange}>
@@ -148,8 +248,42 @@ const DaftarKegiatan = () => {
           <CButton color="secondary" onClick={() => setModalTambah(false)}>Batal</CButton>
         </CModalFooter>
       </CModal>
+      <CModal visible={modalEdit} onClose={() => setModalEdit(false)}>
+        <CModalHeader closeButton>Edit Kegiatan</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CFormLabel htmlFor="nama">Nama Kegiatan</CFormLabel>
+            <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={kegiatanEdit?.nama_kegiatan} onChange={handleChange} />
+
+            <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
+            <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanEdit?.lokasi} onChange={handleChange} />
+
+            <CFormLabel htmlFor="anggaran">Anggaran</CFormLabel>
+            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" required value={kegiatanEdit?.rab} onChange={handleChange} />
+
+            <CFormLabel htmlFor="mulai">Tanggal Mulai</CFormLabel>
+            <CFormInput type="date" id="tgl_mulai" required value={kegiatanEdit?.tgl_mulai} onChange={handleChange} />
+
+            <CFormLabel htmlFor="selesai">Tanggal Selesai</CFormLabel>
+            <CFormInput type="date" id="tgl_selesai" required value={kegiatanEdit?.tgl_selesai} onChange={handleChange} />
+
+            <CFormLabel htmlFor="status">Status</CFormLabel>
+            <CFormSelect id="status" required value={kegiatanEdit?.status} onChange={handleChange}>
+              <option value="">Pilih status kegiatan</option>
+              <option value="Dalam Proses">Dalam Proses</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Dibatalkan">Dibatalkan</option>
+            </CFormSelect>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="primary" onClick={handleUpdateKegiatan}>Update</CButton>
+          <CButton color="secondary" onClick={() => setModalEdit(false)}>Batal</CButton>
+        </CModalFooter>
+      </CModal>
     </CCard>
   )
 }
 
 export default DaftarKegiatan
+

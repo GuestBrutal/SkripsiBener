@@ -40,8 +40,10 @@ const Login = () => {
     try {
       const response = await axios.post(url, { email, password });
       if (response.data.status) {
-        const { token, user } = response.data;
+        const { token, user, token_exp } = response.data;
         localStorage.setItem('token', token);
+        localStorage.setItem('token_exp', token_exp);
+        localStorage.setItem('role', user.role);
         localStorage.setItem('UID', user.id);
         window.location.href = "/"; // Menggunakan window.location.href untuk redirect ke halaman index setelah login berhasil
       } else {

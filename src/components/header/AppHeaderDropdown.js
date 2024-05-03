@@ -50,7 +50,7 @@ const AppHeaderDropdown = () => {
           </CDropdownItem>
         ))}
         <CDropdownDivider />
-        <CDropdownItem component={Link} to="#">
+        <CDropdownItem component={Link} to="/logout">
           <CIcon icon={cilLockLocked} className="me-2" />
           Log Out
         </CDropdownItem>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { CFormSelect } from '@coreui/react'
 import Select from 'react-select'
+import { useNavigate } from 'react-router-dom';
 import {
   CButton,
   CCard,
@@ -21,18 +22,20 @@ const Register = () => {
   const [formData, setFormData] = useState({
     nama: '',
     username: '',
-    // ttl: '',
-    // gender: '',
-    // pendidikan_terakhir: '',
-    // pekerjaan: '',
-    // ktp: '',
-    // alamat: '',
+    ttl: '',
+    gender: '',
+    pendidikan_terakhir: '',
+    pekerjaan: '',
+    ktp: '',
+    alamat: '',
     no_handphone: '',
     email: '',
     password:'',
-    // kecakapan: [],
+    kecakapan: [],
   });
-  const [canSubmit, setCanSubmit] = useState(false);
+  const [step, setStep] = useState(1);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,11 +43,6 @@ const Register = () => {
       ...formData,
       [name]: value
     });
-    if (name === 'password' || name === 'confPassword') {
-      const password = name === 'password' ? value : formData.password;
-      const confPassword = name === 'confPassword' ? value : formData.confPassword;
-      setCanSubmit(password === confPassword);
-    }
   };
 
   const handleMultiSelectChange = (selectedOptions) => {
@@ -54,9 +52,16 @@ const Register = () => {
     });
   };
 
+  const handleNext = () => {
+    setStep(step + 1);
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implement submit logic here
     const url = 'http://localhost:8080/user/';
     try {
       const response = await axios.post(url, formData, {
@@ -67,14 +72,13 @@ const Register = () => {
       if (response.status === 201 || response.status === 200) {
         console.log(response);
         alert('Register Success');
-        window.location.href = "/login"; // Menggunakan window.location.href untuk redirect ke halaman index setelah login berhasil
+        window.location.href = "/login";
       } else {
         setFormData({ ...formData, error: response.data.message || 'Register failed' });
       }
     } catch (error) {
       setFormData({ ...formData, error: error});
     }
-    // console.log(formData);
   };
 
   const kecakapanOptions = [
@@ -90,120 +94,129 @@ const Register = () => {
           <CCol md={12} lg={12} xl={12}>
             <CCard className="mx-4">
               <CCardBody className="p-4">
-                <CForm>
+                <CForm onSubmit={handleSubmit}>
                   <h1>Register</h1>
                   <p className="text-medium-emphasis">Create your account</p>
-                  <CRow>
-                    <CCol md={6}>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          name="nama"
-                          placeholder="Nama"
-                          autoComplete="nama"
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilCalendar} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="date"
-                          name="ttl"
-                          placeholder="Tanggal Lahir"
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUserFemale} />
-                        </CInputGroupText>
-                        <CFormSelect
-                          name="gender"
-                          onChange={handleChange}
-                          disabled
-                        >
-                          <option value="">Pilih Jenis Kelamin</option>
-                          <option value="pria">Pria</option>
-                          <option value="wanita">Wanita</option>
-                        </CFormSelect>
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilGroup} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="pendidikan_terakhir"
-                          placeholder="Pendidikan Terakhir"
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilBriefcase} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="pekerjaan"
-                          placeholder="Pekerjaan"
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </CInputGroup>
-                    </CCol>
-                    <CCol md={6}>
-                      {/* <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilShortText} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="ktp"
-                          placeholder="Nomor KTP"
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </CInputGroup> */}
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilShortText} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="username"
-                          placeholder="Username"
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
-                      {/* <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilLocationPin} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="alamat"
-                          placeholder="Alamat"
-                          onChange={handleChange}
-                          disabled
-                        />
-                      </CInputGroup> */}
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilPhone} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="no_handphone"
-                          placeholder="Telepon"
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
+                  {step === 1 && (
+                    <>
+                      <CRow>
+                        <CCol md={6}>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilShortText} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="text"
+                              name="ktp"
+                              placeholder="Nomor KTP"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilUser} />
+                            </CInputGroupText>
+                            <CFormInput
+                              name="nama"
+                              placeholder="Nama"
+                              autoComplete="nama"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilCalendar} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="date"
+                              name="ttl"
+                              placeholder="Tanggal Lahir"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilUserFemale} />
+                            </CInputGroupText>
+                            <CFormSelect
+                              name="gender"
+                              onChange={handleChange}
+                            >
+                              <option value="">Pilih Jenis Kelamin</option>
+                              <option value="pria">Pria</option>
+                              <option value="wanita">Wanita</option>
+                            </CFormSelect>
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilGroup} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="text"
+                              name="pendidikan_terakhir"
+                              placeholder="Pendidikan Terakhir"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                        </CCol>
+                        <CCol md={6}>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilBriefcase} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="text"
+                              name="pekerjaan"
+                              placeholder="Pekerjaan"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilLocationPin} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="text"
+                              name="alamat"
+                              placeholder="Alamat"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilPhone} />
+                            </CInputGroupText>
+                            <CFormInput
+                              type="text"
+                              name="no_handphone"
+                              placeholder="Telepon"
+                              onChange={handleChange}
+                            />
+                          </CInputGroup>
+                          <CInputGroup className="mb-3">
+                            <CInputGroupText>
+                              <CIcon icon={cilStar} />
+                            </CInputGroupText>
+                            <Select
+                              isMulti
+                              name="kecakapan"
+                              options={kecakapanOptions}
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                              placeholder="Pilih Kecakapan"
+                              onChange={handleMultiSelectChange}
+                            />
+                          </CInputGroup>
+                          <div className="d-flex justify-content-between">
+                            <CButton color="secondary" onClick={()=> navigate('/login')}>Kembali</CButton>
+                            <CButton color="primary" onClick={handleNext}>Selanjutnya</CButton>
+                          </div>
+                        </CCol>
+                      </CRow>
+                    </>
+                  )}
+                  {step === 2 && (
+                    <>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilEnvelopeClosed} />
@@ -226,36 +239,12 @@ const Register = () => {
                           onChange={handleChange}
                         />
                       </CInputGroup>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="password"
-                          name="confPassword"
-                          placeholder="Konfirmasi Password"
-                          onChange={handleChange}
-                        />
-                      </CInputGroup>
-                      {/* <CInputGroup className="mb-3 w-100">
-                        <CInputGroupText>
-                          <CIcon icon={cilStar}/>
-                        </CInputGroupText>
-                        <Select
-                          isMulti
-                          name="kecakapan"
-                          options={kecakapanOptions}
-                          className="basic-multi-select w-100"
-                          classNamePrefix="select"
-                          onChange={handleMultiSelectChange}
-                          styles={{ container: (base) => ({ ...base, flex: 1 }) }}
-                        />
-                      </CInputGroup> */}
-                    </CCol>
-                  </CRow>
-                  <div className="d-grid">
-                    <CButton color="success" onClick={handleSubmit} disabled={!canSubmit}>Create Account</CButton>
-                  </div>
+                      <div className="d-flex justify-content-between">
+                        <CButton color="secondary" onClick={handleBack}>Kembali</CButton>
+                        <CButton color="success" type="submit">Daftar</CButton>
+                      </div>
+                    </>
+                  )}
                 </CForm>
               </CCardBody>
             </CCard>
@@ -263,8 +252,8 @@ const Register = () => {
         </CRow>
       </CContainer>
     </div>
-  )
-}
+  );
+};
 
 export default Register
 

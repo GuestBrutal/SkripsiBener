@@ -1,11 +1,55 @@
-import React, { Suspense } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { CContainer, CSpinner } from '@coreui/react'
+import React, { Suspense, useEffect, useState } from 'react'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { CContainer, CSpinner, CModal, CModalBody, CModalHeader, CModalFooter, CButton } from '@coreui/react'
+import axios from 'axios';
 
 // routes config
 import routes from '../routes'
 
 const AppContent = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [extendSession, setExtendSession] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const tokenExp = localStorage.getItem('token_exp');
+      const currentTime = Math.floor(Date.now() / 1000); // waktu saat ini dalam detik
+      console.log("time left :", tokenExp - currentTime);
+
+      if (tokenExp && (tokenExp - currentTime) <= 300) {
+        setShowModal(true);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showModal]);
+
+  const handleLoginAgain = () => {
+    navigate('/login');
+    setShowModal(false);
+  };
+
+  const handleExtend = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/refresh_token', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token_exp', response.data.token_exp);
+        setExtendSession(true);
+        setShowModal(false);
+      } else {
+        console.log('Failed to extend session');
+      }
+    } catch (error) {
+      console.log('Error extending session:', error);
+    }
+  };
+
   return (
     <CContainer lg>
       <Suspense fallback={<CSpinner color='primary'/>}>
@@ -25,6 +69,18 @@ const AppContent = () => {
           })}
         </Routes>
       </Suspense>
+      <CModal visible={showModal} onClose={() => { setShowModal(false); extendSession ? null : handleLoginAgain(); }}>
+        <CModalHeader>
+          Sesi Anda Telah Berakhir
+        </CModalHeader>
+        <CModalBody>
+          Sesi Anda telah berakhir, silakan login kembali untuk melanjutkan.
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="primary" className='ms-3' onClick={handleExtend}>Perpanjang Sesi</CButton>
+          <CButton color="danger" className='ms-3 text-white' onClick={handleLoginAgain}>Logout</CButton>
+        </CModalFooter>
+      </CModal>
     </CContainer>
   )
 }

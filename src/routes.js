@@ -18,11 +18,12 @@ const Charts = React.lazy(() => import('./views/charts/Charts'))
 const DashboardAdmin = React.lazy(() => import('./views/admin/DashboardAdmin'))
 const DaftarKegiatan = React.lazy(() => import('./views/admin/DaftarKegiatan'))
 const UserManagement = React.lazy(() => import('./views/admin/UserManagement'))
-
+const KecakapanManagement = React.lazy(() => import('./views/admin/KecakapanManagement'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home', element: Beranda, requiresAuth: true },
-  { path: '/admin/manajemenpengguna', name: 'Manajemen Pengguna', element: UserManagement, requiresAuth:true },
+  { path: '/admin/manajemenpengguna', name: 'Manajemen Pengguna', element: UserManagement, requiresAuth: true },
+  { path: '/admin/kecakapan', name: 'Manajemen Kecakapan', element: KecakapanManagement, requiresAuth: true },
   { path: '/admin/dashboard', name: 'Dashboard Admin', element: DashboardAdmin, requiresAuth:true },
   { path: '/user/profile', name: 'Profile', element: Profile, requiresAuth:true },
   { path: '/user/dashboard', name: 'Dashboard User', element: DashboardUser, requiresAuth:true },
