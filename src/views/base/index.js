@@ -1,4 +1,4 @@
-import Breadcrumbs from '../keuangan/pengeluaran'
+import Breadcrumbs from '../user/keuangan/pengeluaran'
 import Cards from './Cards'
 import Carousels from './Carousels'
 import Collapses from './Collapses'

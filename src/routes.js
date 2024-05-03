@@ -1,106 +1,40 @@
 import React from 'react'
-import LaporanHarian from './views/laporan/harian/LaporanHarian'
 
-const DashboardUser = React.lazy(() => import('./views/dashboard/dashboarduser/DashboardUser'))
-const DashboardAdmin = React.lazy(() => import('./views/dashboard/dashboardadmin/DashboardAdmin'))
-const Beranda = React.lazy(() => import('./views/theme/beranda/Beranda'))
-const DaftarKegiatan = React.lazy(() => import('./views/theme/daftarkegiatan/DaftarKegiatan'))
-const Target = React.lazy(() => import('./views/theme/target/Target'))
-
-// Base
-const Pemasukan = React.lazy(() => import('./views/keuangan/pemasukan/pemasukan'))
-const Pengeluaran = React.lazy(() => import('./views/keuangan/pengeluaran/pengeluaran'))
-const Cards = React.lazy(() => import('./views/base/cards/Cards'))
-const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
-const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
-const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'))
-const Navs = React.lazy(() => import('./views/base/navs/Navs'))
-const Paginations = React.lazy(() => import('./views/base/paginations/Paginations'))
-const Placeholders = React.lazy(() => import('./views/base/placeholders/Placeholders'))
-const Popovers = React.lazy(() => import('./views/base/popovers/Popovers'))
-const Progress = React.lazy(() => import('./views/base/progress/Progress'))
-const Spinners = React.lazy(() => import('./views/base/spinners/Spinners'))
-const Tables = React.lazy(() => import('./views/base/tables/Tables'))
-const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
-
-// Buttons
-const Tim = React.lazy(() => import('./views/tim/Tim'))
-const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
-const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
-
-//Forms
-const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
-const FloatingLabels = React.lazy(() => import('./views/forms/floating-labels/FloatingLabels'))
-const FormControl = React.lazy(() => import('./views/forms/form-control/FormControl'))
-const InputGroup = React.lazy(() => import('./views/forms/input-group/InputGroup'))
-const Layout = React.lazy(() => import('./views/forms/layout/Layout'))
-const Range = React.lazy(() => import('./views/forms/range/Range'))
-const Select = React.lazy(() => import('./views/forms/select/Select'))
-const Validation = React.lazy(() => import('./views/forms/validation/Validation'))
-
+// Lazy imports for User Views
+const DashboardUser = React.lazy(() => import('./views/user/DashboardUser'))
+const Beranda = React.lazy(() => import('./views/user/Beranda'))
+const Target = React.lazy(() => import('./views/user/Target'))
+const Profile = React.lazy(() => import('./views/user/Profile'))
+const Pemasukan = React.lazy(() => import('./views/user/keuangan/pemasukan'))
+const Pengeluaran = React.lazy(() => import('./views/user/keuangan/pengeluaran'))
+const Tim = React.lazy(() => import('./views/user/Tim'))
+const Relawan = React.lazy(() => import('./views/user/Relawan'))
+const LaporanHarian = React.lazy(() => import('./views/user/laporan/LaporanHarian'))
+const LaporanMingguan = React.lazy(() => import('./views/user/laporan/LaporanMingguan'))
 const Charts = React.lazy(() => import('./views/charts/Charts'))
 
-// Icons
-const CoreUIIcons = React.lazy(() => import('./views/icons/coreui-icons/CoreUIIcons'))
-const Flags = React.lazy(() => import('./views/icons/flags/Flags'))
-const Brands = React.lazy(() => import('./views/icons/brands/Brands'))
 
-// Notifications
-const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
-const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
-const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
-const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
+// Lazy imports for Admin Views
+const DashboardAdmin = React.lazy(() => import('./views/admin/DashboardAdmin'))
+const DaftarKegiatan = React.lazy(() => import('./views/admin/DaftarKegiatan'))
+const UserManagement = React.lazy(() => import('./views/admin/UserManagement'))
 
-const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard/admin', name: 'Dashboard Admin', element: DashboardAdmin },
-  { path: '/dashboard/user', name: 'Dashboard User', element: DashboardUser },
-  { path: '/theme', name: 'Theme', element: DaftarKegiatan, exact: true },
-  { path: '/theme/beranda', name: 'Beranda', element: Beranda },
-  { path: '/theme/daftarkegiatan', name: 'Daftar Kegiatan', element: DaftarKegiatan },
-  { path: '/theme/target', name: 'Target', element: Target },
-  { path: '/base', name: 'Base', element: Cards, exact: true },
-  { path: '/keuangan/pemasukan', name: 'Pemasukan', element: Pemasukan },
-  { path: '/keuangan/pengeluaran', name: 'Pengeluaran', element: Pengeluaran },
-  { path: '/base/cards', name: 'Cards', element: Cards },
-  { path: '/base/carousels', name: 'Carousel', element: Carousels },
-  { path: '/base/collapses', name: 'Collapse', element: Collapses },
-  { path: '/base/list-groups', name: 'List Groups', element: ListGroups },
-  { path: '/base/navs', name: 'Navs', element: Navs },
-  { path: '/base/paginations', name: 'Paginations', element: Paginations },
-  { path: '/base/placeholders', name: 'Placeholders', element: Placeholders },
-  { path: '/base/popovers', name: 'Popovers', element: Popovers },
-  { path: '/base/progress', name: 'Progress', element: Progress },
-  { path: '/base/spinners', name: 'Spinners', element: Spinners },
-  { path: '/base/tables', name: 'Tables', element: Tables },
-  { path: '/base/tooltips', name: 'Tooltips', element: Tooltips },
-  { path: '/tim', name: 'Tim', element: Tim, exact: true },
-  { path: '/tim', name: 'Data Tim', element: Tim },
-  { path: '/buttons/dropdowns', name: 'Dropdowns', element: Dropdowns },
-  { path: '/buttons/button-groups', name: 'Button Groups', element: ButtonGroups },
-  { path: '/charts', name: 'Charts', element: Charts },
-  { path: '/forms', name: 'Forms', element: FormControl, exact: true },
-  { path: '/forms/form-control', name: 'Form Control', element: FormControl },
-  { path: '/laporan/harian', name: 'Harian', element: LaporanHarian },
-  { path: '/forms/select', name: 'Select', element: Select },
-  { path: '/forms/checks-radios', name: 'Checks & Radios', element: ChecksRadios },
-  { path: '/forms/range', name: 'Range', element: Range },
-  { path: '/forms/input-group', name: 'Input Group', element: InputGroup },
-  { path: '/forms/floating-labels', name: 'Floating Labels', element: FloatingLabels },
-  { path: '/forms/layout', name: 'Layout', element: Layout },
-  { path: '/forms/validation', name: 'Validation', element: Validation },
-  { path: '/icons', exact: true, name: 'Icons', element: CoreUIIcons },
-  { path: '/icons/coreui-icons', name: 'CoreUI Icons', element: CoreUIIcons },
-  { path: '/icons/flags', name: 'Flags', element: Flags },
-  { path: '/icons/brands', name: 'Brands', element: Brands },
-  { path: '/notifications', name: 'Notifications', element: Alerts, exact: true },
-  { path: '/notifications/alerts', name: 'Alerts', element: Alerts },
-  { path: '/notifications/badges', name: 'Badges', element: Badges },
-  { path: '/notifications/modals', name: 'Modals', element: Modals },
-  { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
-  { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/', exact: true, name: 'Home', element: Beranda, requiresAuth: true },
+  { path: '/admin/manajemenpengguna', name: 'Manajemen Pengguna', element: UserManagement, requiresAuth:true },
+  { path: '/admin/dashboard', name: 'Dashboard Admin', element: DashboardAdmin, requiresAuth:true },
+  { path: '/user/profile', name: 'Profile', element: Profile, requiresAuth:true },
+  { path: '/user/dashboard', name: 'Dashboard User', element: DashboardUser, requiresAuth:true },
+  { path: '/admin/daftarkegiatan', name: 'Daftar Kegiatan', element: DaftarKegiatan, requiresAuth:true },
+  { path: '/user/relawan', name: 'Relawan', element: Relawan, requiresAuth:true },
+  { path: '/user/charts', name: 'Charts', element: Charts, requiresAuth:true },
+  { path: '/user/keuangan/pemasukan', name: 'Pemasukan', element: Pemasukan, requiresAuth:true },
+  { path: '/user/keuangan/pengeluaran', name: 'Pengeluaran', element: Pengeluaran, requiresAuth:true },
+  { path: '/user/tim', name: 'Tim', element: Tim, requiresAuth:true },
+  { path: '/user/laporan/harian', name: 'Harian', element: LaporanHarian, requiresAuth:true },
+  { path: '/user/target', name: 'Target', element: Target, requiresAuth:true },
+  { path: '/user/laporan/mingguan', name: 'Mingguan', element: LaporanMingguan, requiresAuth:true },
 ]
 
 export default routes

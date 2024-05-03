@@ -14,21 +14,25 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilUser, cilCalendar, cilUserFemale, cilBriefcase, cilGroup, cilShortText, cilLocationPin, cilPhone, cilEnvelopeClosed, cilStar } from '@coreui/icons'
+import { cilUser, cilCalendar, cilUserFemale, cilBriefcase, cilGroup, cilShortText, cilLocationPin, cilPhone, cilEnvelopeClosed, cilStar, cilLockLocked } from '@coreui/icons'
+import axios from 'axios';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     nama: '',
-    ttl: '',
-    gender: '',
-    pendidikan_terakhir: '',
-    pekerjaan: '',
-    ktp: '',
-    alamat: '',
-    telp: '',
+    username: '',
+    // ttl: '',
+    // gender: '',
+    // pendidikan_terakhir: '',
+    // pekerjaan: '',
+    // ktp: '',
+    // alamat: '',
+    no_handphone: '',
     email: '',
-    kecakapan: [],
+    password:'',
+    // kecakapan: [],
   });
+  const [canSubmit, setCanSubmit] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,6 +40,11 @@ const Register = () => {
       ...formData,
       [name]: value
     });
+    if (name === 'password' || name === 'confPassword') {
+      const password = name === 'password' ? value : formData.password;
+      const confPassword = name === 'confPassword' ? value : formData.confPassword;
+      setCanSubmit(password === confPassword);
+    }
   };
 
   const handleMultiSelectChange = (selectedOptions) => {
@@ -45,9 +54,27 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     // Implement submit logic here
-    console.log(formData);
+    const url = 'http://localhost:8080/user/';
+    try {
+      const response = await axios.post(url, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (response.status === 201 || response.status === 200) {
+        console.log(response);
+        alert('Register Success');
+        window.location.href = "/login"; // Menggunakan window.location.href untuk redirect ke halaman index setelah login berhasil
+      } else {
+        setFormData({ ...formData, error: response.data.message || 'Register failed' });
+      }
+    } catch (error) {
+      setFormData({ ...formData, error: error});
+    }
+    // console.log(formData);
   };
 
   const kecakapanOptions = [
@@ -88,6 +115,7 @@ const Register = () => {
                           name="ttl"
                           placeholder="Tanggal Lahir"
                           onChange={handleChange}
+                          disabled
                         />
                       </CInputGroup>
                       <CInputGroup className="mb-3">
@@ -97,6 +125,7 @@ const Register = () => {
                         <CFormSelect
                           name="gender"
                           onChange={handleChange}
+                          disabled
                         >
                           <option value="">Pilih Jenis Kelamin</option>
                           <option value="pria">Pria</option>
@@ -112,6 +141,7 @@ const Register = () => {
                           name="pendidikan_terakhir"
                           placeholder="Pendidikan Terakhir"
                           onChange={handleChange}
+                          disabled
                         />
                       </CInputGroup>
                       <CInputGroup className="mb-3">
@@ -123,11 +153,12 @@ const Register = () => {
                           name="pekerjaan"
                           placeholder="Pekerjaan"
                           onChange={handleChange}
+                          disabled
                         />
                       </CInputGroup>
                     </CCol>
                     <CCol md={6}>
-                      <CInputGroup className="mb-3">
+                      {/* <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilShortText} />
                         </CInputGroupText>
@@ -136,9 +167,21 @@ const Register = () => {
                           name="ktp"
                           placeholder="Nomor KTP"
                           onChange={handleChange}
+                          disabled
+                        />
+                      </CInputGroup> */}
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilShortText} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="text"
+                          name="username"
+                          placeholder="Username"
+                          onChange={handleChange}
                         />
                       </CInputGroup>
-                      <CInputGroup className="mb-3">
+                      {/* <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilLocationPin} />
                         </CInputGroupText>
@@ -147,15 +190,16 @@ const Register = () => {
                           name="alamat"
                           placeholder="Alamat"
                           onChange={handleChange}
+                          disabled
                         />
-                      </CInputGroup>
+                      </CInputGroup> */}
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
                           <CIcon icon={cilPhone} />
                         </CInputGroupText>
                         <CFormInput
                           type="text"
-                          name="telp"
+                          name="no_handphone"
                           placeholder="Telepon"
                           onChange={handleChange}
                         />
@@ -173,21 +217,44 @@ const Register = () => {
                       </CInputGroup>
                       <CInputGroup className="mb-3">
                         <CInputGroupText>
-                          <CIcon icon={cilStar} />
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="password"
+                          name="password"
+                          placeholder="Password"
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="password"
+                          name="confPassword"
+                          placeholder="Konfirmasi Password"
+                          onChange={handleChange}
+                        />
+                      </CInputGroup>
+                      {/* <CInputGroup className="mb-3 w-100">
+                        <CInputGroupText>
+                          <CIcon icon={cilStar}/>
                         </CInputGroupText>
                         <Select
                           isMulti
                           name="kecakapan"
                           options={kecakapanOptions}
-                          className="basic-multi-select"
+                          className="basic-multi-select w-100"
                           classNamePrefix="select"
                           onChange={handleMultiSelectChange}
+                          styles={{ container: (base) => ({ ...base, flex: 1 }) }}
                         />
-                      </CInputGroup>
+                      </CInputGroup> */}
                     </CCol>
                   </CRow>
                   <div className="d-grid">
-                    <CButton color="success" onClick={handleSubmit}>Create Account</CButton>
+                    <CButton color="success" onClick={handleSubmit} disabled={!canSubmit}>Create Account</CButton>
                   </div>
                 </CForm>
               </CCardBody>

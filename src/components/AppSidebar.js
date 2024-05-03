@@ -19,7 +19,6 @@ const AppSidebar = () => {
     <CSidebar
       position="fixed"
       narrow={!sidebarShow}
-      colorScheme="dark"
     >
       <CSidebarBrand to="/">
         <CIcon icon={cibRedux} height={35} className='mx-2' />

@@ -19,230 +19,55 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-const _nav = [
+const navItems = [
+  { title: 'Admin', isTitle: true },
+  { name: 'Dashboard Admin', to: '/admin/dashboard', icon: cilSpeedometer },
+  { name: 'Daftar Kegiatan', to: '/admin/daftarkegiatan', icon: cilList },
+  { name: 'Manajemen Pengguna', to: '/admin/manajemenpengguna', icon: cilList },
+  { title: 'User', isTitle: true },
+  { name: 'Beranda', to: '/', icon: cilHome },
+  { name: 'Detail', to: '/user/dashboard', icon: cilInfo, badge: { color: 'info', text: 'NEW' } },
+  { name: 'Relawan', to: '/user/relawan', icon: cilList },
+  { name: 'Target', to: '/user/target', icon: cilBell },
+  { name: 'Charts', to: '/user/charts', icon: cilChartPie },
   {
-    component: CNavTitle,
-    name: 'Dashboard',
+    name: 'Keuangan', icon: cilCash, children: [
+      { name: 'Pemasukan', to: '/user/keuangan/pemasukan' },
+      { name: 'Pengeluaran', to: '/user/keuangan/pengeluaran' }
+    ]
   },
+  { name: 'Tim', to: '/user/tim', icon: cilPeople },
   {
+    name: 'Laporan', icon: cilNoteAdd, children: [
+      { name: 'Harian', to: '/user/laporan/harian' },
+      { name: 'Mingguan', to: '/user/laporan/mingguan' }
+    ]
+  },
+  { name: 'Keluar', to: '/logout' },
+];
+
+const _nav = navItems.map(item => {
+  if (item.isTitle) return { component: CNavTitle, name: item.title };
+  if (item.children) {
+    return {
+      component: CNavGroup,
+      name: item.name,
+      icon: <CIcon icon={item.icon} customClassName="nav-icon" />,
+      items: item.children.map(child => ({
+        component: CNavItem,
+        name: child.name,
+        to: child.to
+      }))
+    };
+  }
+  return {
     component: CNavItem,
-    name: 'Beranda',
-    to: '/theme/beranda',
-    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Dashboard Admin',
-    to: '/dashboard/admin',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'User',
-  },
-  {
-    component: CNavItem,
-    name: 'Detail',
-    to: '/dashboard/user',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-  {
-    component: CNavItem,
-    name: 'Daftar Kegiatan',
-    to: '/theme/daftarkegiatan',
-    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Target',
-    to: '/theme/target',
-    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Charts',
-    to: '/charts',
-    icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'Laporan',
-  },
-  {
-    component: CNavGroup,
-    name: 'Keuangan',
-    to: '/base',
-    icon: <CIcon icon={cilCash} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Pemasukan',
-        to: '/keuangan/pemasukan',
-      },
-      {
-        component: CNavItem,
-        name: 'Pengeluaran',
-        to: '/keuangan/pengeluaran',
-      },
-    ],
-  },
-  {
-    component: CNavItem,
-    name: 'Tim',
-    to: '/tim',
-    icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavGroup,
-    name: 'Laporan',
-    icon: <CIcon icon={cilNoteAdd} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Harian',
-        to: '/laporan/harian',
-      },
-      {
-        component: CNavItem,
-        name: 'Mingguan',
-        to: '/forms/select',
-      },
-      {
-        component: CNavItem,
-        name: 'Checks & Radios',
-        to: '/forms/checks-radios',
-      },
-      {
-        component: CNavItem,
-        name: 'Range',
-        to: '/forms/range',
-      },
-      {
-        component: CNavItem,
-        name: 'Input Group',
-        to: '/forms/input-group',
-      },
-      {
-        component: CNavItem,
-        name: 'Floating Labels',
-        to: '/forms/floating-labels',
-      },
-      {
-        component: CNavItem,
-        name: 'Layout',
-        to: '/forms/layout',
-      },
-      {
-        component: CNavItem,
-        name: 'Validation',
-        to: '/forms/validation',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Icons',
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'CoreUI Free',
-        to: '/icons/coreui-icons',
-        badge: {
-          color: 'success',
-          text: 'NEW',
-        },
-      },
-      {
-        component: CNavItem,
-        name: 'CoreUI Flags',
-        to: '/icons/flags',
-      },
-      {
-        component: CNavItem,
-        name: 'CoreUI Brands',
-        to: '/icons/brands',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Notifications',
-    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Alerts',
-        to: '/notifications/alerts',
-      },
-      {
-        component: CNavItem,
-        name: 'Badges',
-        to: '/notifications/badges',
-      },
-      {
-        component: CNavItem,
-        name: 'Modal',
-        to: '/notifications/modals',
-      },
-      {
-        component: CNavItem,
-        name: 'Toasts',
-        to: '/notifications/toasts',
-      },
-    ],
-  },
-  {
-    component: CNavItem,
-    name: 'Widgets',
-    to: '/widgets',
-    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
-  },
-  {
-    component: CNavTitle,
-    name: 'Extras',
-  },
-  {
-    component: CNavGroup,
-    name: 'Pages',
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Login',
-        to: '/login',
-      },
-      {
-        component: CNavItem,
-        name: 'Register',
-        to: '/register',
-      },
-      {
-        component: CNavItem,
-        name: 'Error 404',
-        to: '/404',
-      },
-      {
-        component: CNavItem,
-        name: 'Error 500',
-        to: '/500',
-      },
-    ],
-  },
-  {
-    component: CNavItem,
-    name: 'Docs',
-    href: 'https://coreui.io/react/docs/templates/installation/',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-  },
-]
+    name: item.name,
+    to: item.to,
+    icon: <CIcon icon={item.icon} customClassName="nav-icon" />,
+    badge: item.badge
+  };
+});
 
 export default _nav
+

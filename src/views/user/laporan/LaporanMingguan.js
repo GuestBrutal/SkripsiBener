@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { CCard, CCardBody, CCardHeader, CCol, CFormSelect, CRow, CModal, CModalHeader, CModalBody, CModalFooter, CButton, CProgressBar } from '@coreui/react'
 
-const Select = () => {
+const LaporanMingguan = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
 
   return (
     <CRow>
-      <CCol sm="4" style={{ height: '100vh', overflow: 'hidden' }}>
+      <CCol sm="4" style={{ height: '65vh', overflow: 'hidden' }}>
         <CCard>
           <CCardHeader>
             Informasi Kegiatan
@@ -20,7 +20,7 @@ const Select = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol sm="8" style={{ height: '100vh', overflowY: 'auto' }}>
+      <CCol sm="8" style={{ height: '75vh', overflowY: 'auto' }} className=''>
         {Array.from({ length: 7 }, (_, i) => (
           <CCard key={i} className="mb-2">
             <CCardHeader>
@@ -66,4 +66,4 @@ const Select = () => {
   )
 }
 
-export default Select
+export default LaporanMingguan
