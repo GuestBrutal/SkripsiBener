@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CCard, CCardBody, CCardHeader, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CFormInput, CForm } from '@coreui/react';
+import { CCard, CCardBody, CCardHeader, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CFormInput, CForm, CBadge } from '@coreui/react';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 
@@ -22,6 +22,7 @@ const UserManagement = () => {
         }
       });
       if (response.status === 200) {
+        console.log(response.data);
         setUsers(response.data);
       } else {
         console.error('Failed to fetch users');
@@ -62,34 +63,51 @@ const UserManagement = () => {
 
   const columns = [
     {
-      name: 'ID',
-      selector: row => row.id,
+      name: 'No',
+      selector: row => users.indexOf(row) + 1,
       sortable: true,
-      width: '5%'
+      width: '7%'
     },
     {
       name: 'Nama',
-      selector: row => row.nama,
+      selector: row => (
+        <>
+          {row.nama}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '2px'}}>
+            {row.kecakapan ? row.kecakapan.map(skill => (
+              <CBadge color={skill.warna} key={skill.id}>
+                {skill.nama}
+              </CBadge>
+            )) : null}
+          </div>
+        </>
+      ),
       sortable: true,
-      width: '20%'
-    },
-    {
-      name: 'Username',
-      selector: row => row.username,
-      sortable: true,
-      width: '20%'
+      width: '18%'
     },
     {
       name: 'Email',
       selector: row => row.email,
       sortable: true,
-      width: '20%'
+      width: '15%'
+    },
+    {
+      name: 'Tanggal Lahir',
+      selector: row => new Date(row.ttl).toLocaleDateString('id-ID'),
+      sortable: true,
+      width: '15%'
     },
     {
       name: 'No. Telepon',
-      selector: row => row.no_handphone,
+      selector: row => row.telp,
       sortable: true,
-      width: '20%'
+      width: '15%'
+    },
+    {
+      name: 'Pekerjaan',
+      selector: row => row.pekerjaan,
+      sortable: true,
+      width: '15%'
     },
     {
       name: 'Aksi',
@@ -104,8 +122,6 @@ const UserManagement = () => {
         </>
       ),
       ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
       width: '15%'
     }
   ];

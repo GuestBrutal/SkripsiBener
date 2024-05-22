@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CRow, CCol, CCard, CFormInput, CInputGroup, CInputGroupText, CBadge, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CForm, CFormLabel, CFormSelect } from '@coreui/react'
 import DataTable from 'react-data-table-component'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilPlus, cilPencil, cilTrash } from '@coreui/icons'
+import { cilSearch, cilPlus, cilPencil, cilTrash, cilCheck, cilX } from '@coreui/icons'
 
 const DaftarKegiatan = () => {
   const url = 'http://localhost:8080/daftar_kegiatan';
@@ -11,6 +11,7 @@ const DaftarKegiatan = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [modalTambah, setModalTambah] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
+  const [modalValidasi, setModalValidasi] = useState(false);
   const [data, setData] = useState([]);
   const [kegiatanBaru, setKegiatanBaru] = useState({
     nama_kegiatan: '',
@@ -21,6 +22,14 @@ const DaftarKegiatan = () => {
     status: ''
   });
   const [kegiatanEdit, setKegiatanEdit] = useState(null);
+  const [kegiatanValidasi, setKegiatanValidasi] = useState(null);
+  const [pendaftar, setPendaftar] = useState({
+    tervalidasi: [],
+    belumTervalidasi: [
+      { id: 1, nama: 'John Doe' },
+      { id: 2, nama: 'Jane Doe' }
+    ]
+  });
 
   useEffect(() => {
     fetchData();
@@ -56,10 +65,11 @@ const DaftarKegiatan = () => {
         }
       });
       if (response.status === 201) {
-        setData([...data, response.data]);
+        fetchData();
         setModalTambah(false);
         setKegiatanBaru({
           nama_kegiatan: '',
+          deskripsi: '',
           lokasi: '',
           rab: 0,
           tgl_mulai: '',
@@ -79,15 +89,14 @@ const DaftarKegiatan = () => {
 
   const handleUpdateKegiatan = async () => {
     try {
-      const response = await axios.put(`${url}/${kegiatanEdit.id}`, kegiatanEdit, {
+      const response = await axios.put(`${url}/${kegiatanEdit.no}`, kegiatanEdit, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       if (response.status === 200) {
-        const updatedData = data.map(item => item.id === kegiatanEdit.id ? response.data : item);
-        setData(updatedData);
+        fetchData();
         setModalEdit(false);
       }
     } catch (error) {
@@ -104,12 +113,34 @@ const DaftarKegiatan = () => {
         }
       });
       if (response.status === 200) {
-        const updatedData = data.filter(item => item.id !== id);
+        const updatedData = data.filter(item => item.no !== id);
         setData(updatedData);
       }
     } catch (error) {
       console.error('Error deleting activity:', error);
     }
+  };
+
+  const handleValidasi = (kegiatan) => {
+    setKegiatanValidasi(kegiatan);
+    setModalValidasi(true);
+  };
+
+  const validatePendaftar = (id) => {
+    const updatedBelumTervalidasi = pendaftar.belumTervalidasi.filter(item => item.id !== id);
+    const validated = pendaftar.belumTervalidasi.find(item => item.id === id);
+    setPendaftar({
+      tervalidasi: [...pendaftar.tervalidasi, validated],
+      belumTervalidasi: updatedBelumTervalidasi
+    });
+  };
+
+  const rejectPendaftar = (id) => {
+    const updatedBelumTervalidasi = pendaftar.belumTervalidasi.filter(item => item.id !== id);
+    setPendaftar({
+      ...pendaftar,
+      belumTervalidasi: updatedBelumTervalidasi
+    });
   };
 
   const handleChange = (e) => {
@@ -119,8 +150,19 @@ const DaftarKegiatan = () => {
 
   const columns = [
     {
+      name: 'No',
+      selector: row => filteredData.indexOf(row) + 1,
+      sortable: true,
+      width: '8%'
+    },
+    {
       name: 'Nama',
       selector: row => row.nama_kegiatan,
+      sortable: true
+    },
+    {
+      name: 'Deskripsi',
+      selector: row => row.deskripsi,
       sortable: true
     },
     {
@@ -132,18 +174,19 @@ const DaftarKegiatan = () => {
       name: 'Anggaran',
       selector: row => row.rab,
       sortable: true,
-      right: true,
-      format: row => `Rp. ${row.rab.toLocaleString()}`
+      format: row => `Rp. ${row.rab.toLocaleString('id-ID')}`
     },
     {
-      name: 'Tanggal Mulai',
-      selector: row => row.tgl_mulai,
-      sortable: true
+      name: 'Mulai',
+      selector: row => new Date(row.tgl_mulai).toLocaleDateString('id-ID'),
+      sortable: true,
+      width: '10%'
     },
     {
-      name: 'Tanggal Selesai',
-      selector: row => row.tgl_selesai,
-      sortable: true
+      name: 'Selesai',
+      selector: row => new Date(row.tgl_selesai).toLocaleDateString('id-ID'),
+      sortable: true,
+      width: '12%'
     },
     {
       name: 'Status',
@@ -155,11 +198,14 @@ const DaftarKegiatan = () => {
       name: 'Aksi',
       cell: row => (
         <>
-          <CButton size="sm" color="info" onClick={() => handleEdit(row)}>
+          <CButton size="sm" color="info" className='text-light' onClick={() => handleEdit(row)}>
             <CIcon icon={cilPencil} />
           </CButton>
-          <CButton size="sm" color="danger" onClick={() => handleHapus(row.id)}>
+          <CButton size="sm" color="danger" className='ms-2 text-white' onClick={() => handleHapus(row.no)}>
             <CIcon icon={cilTrash} />
+          </CButton>
+          <CButton size="sm" color="primary" className='ms-2 text-white' onClick={() => handleValidasi(row)}>
+            <CIcon icon={cilCheck} />
           </CButton>
         </>
       ),
@@ -222,6 +268,9 @@ const DaftarKegiatan = () => {
             <CFormLabel htmlFor="nama">Nama Kegiatan</CFormLabel>
             <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={kegiatanBaru.nama_kegiatan} onChange={handleChange} />
 
+            <CFormLabel htmlFor="deskripsi">Deskripsi</CFormLabel>
+            <CFormInput type="text" id="deskripsi" placeholder="Masukkan deskripsi kegiatan" required value={kegiatanBaru.deskripsi} onChange={handleChange} />
+
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
             <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanBaru.lokasi} onChange={handleChange} />
 
@@ -255,6 +304,9 @@ const DaftarKegiatan = () => {
             <CFormLabel htmlFor="nama">Nama Kegiatan</CFormLabel>
             <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={kegiatanEdit?.nama_kegiatan} onChange={handleChange} />
 
+            <CFormLabel htmlFor="deskripsi">Deskripsi</CFormLabel>
+            <CFormInput type="text" id="deskripsi" placeholder="Masukkan deskripsi kegiatan" required value={kegiatanEdit?.deskripsi} onChange={handleChange} />
+
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
             <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanEdit?.lokasi} onChange={handleChange} />
 
@@ -279,6 +331,43 @@ const DaftarKegiatan = () => {
         <CModalFooter>
           <CButton color="primary" onClick={handleUpdateKegiatan}>Update</CButton>
           <CButton color="secondary" onClick={() => setModalEdit(false)}>Batal</CButton>
+        </CModalFooter>
+      </CModal>
+      <CModal visible={modalValidasi} onClose={() => setModalValidasi(false)}>
+        <CModalHeader closeButton>Validasi Pendaftar</CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CFormLabel htmlFor="deskripsi">Deskripsi</CFormLabel>
+            <CFormInput type="text" id="deskripsi" placeholder="Deskripsi Kegiatan" required value={kegiatanValidasi?.deskripsi} readOnly />
+
+            <CFormLabel htmlFor="lokasi">Lokasi</CFormLabel>
+            <CFormInput type="text" id="lokasi" placeholder="Lokasi Kegiatan" required value={kegiatanValidasi?.lokasi} readOnly />
+
+            <h5 className="mt-4">Pendaftar Tervalidasi</h5>
+            <ul>
+              {pendaftar.tervalidasi.map(p => (
+                <li key={p.id}>{p.nama}</li>
+              ))}
+            </ul>
+
+            <h5 className="mt-4">Pendaftar Belum Tervalidasi</h5>
+            <ul>
+              {pendaftar.belumTervalidasi.map(p => (
+                <li key={p.id}>
+                  {p.nama}
+                  <CButton size="sm" color="success" className='ms-2' onClick={() => validatePendaftar(p.id)}>
+                    <CIcon icon={cilCheck} />
+                  </CButton>
+                  <CButton size="sm" color="danger" className='ms-2' onClick={() => rejectPendaftar(p.id)}>
+                    <CIcon icon={cilX} />
+                  </CButton>
+                </li>
+              ))}
+            </ul>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setModalValidasi(false)}>Tutup</CButton>
         </CModalFooter>
       </CModal>
     </CCard>

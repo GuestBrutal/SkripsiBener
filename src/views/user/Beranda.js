@@ -24,7 +24,7 @@ const Beranda = () => {
               <br />
               Daftarkan diri kamu sebagai Relawan!
             </p>
-            <CButton className="d-grid gap-2 col-5 mx-left" color="warning">
+            <CButton className="d-grid gap-2 col-5 mx-left" color="warning" onClick={() => window.location.href = '/user/relawan'}>
               Daftar
             </CButton>
             <br />

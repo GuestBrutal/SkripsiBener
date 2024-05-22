@@ -9,6 +9,8 @@ const KecakapanManagement = () => {
   const [kecakapan, setKecakapan] = useState([]);
   const [editKecakapan, setEditKecakapan] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newKecakapan, setNewKecakapan] = useState({ nama: '', warna: '' });
 
   useEffect(() => {
     fetchKecakapan();
@@ -24,6 +26,7 @@ const KecakapanManagement = () => {
         }
       });
       if (response.status === 200) {
+        console.log(response.data);
         setKecakapan(response.data);
       } else {
         console.error('Failed to fetch kecakapan');
@@ -81,12 +84,37 @@ const KecakapanManagement = () => {
     setEditKecakapan({ ...editKecakapan, [e.target.name]: e.target.value });
   };
 
+  const handleAddChange = (e) => {
+    setNewKecakapan({ ...newKecakapan, [e.target.name]: e.target.value });
+  };
+
+  const handleAdd = async () => {
+    const url = 'http://localhost:8080/kecakapan';
+    try {
+      const response = await axios.post(url, newKecakapan, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 201) {
+        setKecakapan([...kecakapan, response.data]);
+        setShowAddModal(false);
+        setNewKecakapan({ nama: '', warna: '' });
+      } else {
+        console.error('Failed to add kecakapan');
+      }
+    } catch (error) {
+      console.error('Error adding kecakapan:', error);
+    }
+  };
+
   const columns = [
     {
-      name: 'ID',
-      selector: row => row.id,
+      name: 'No',
+      selector: row => kecakapan.indexOf(row) + 1,
       sortable: true,
-      width: '5%'
+      width: '7%'
     },
     {
       name: 'Nama Kecakapan',
@@ -98,7 +126,7 @@ const KecakapanManagement = () => {
       name: 'Warna Label',
       selector: row => {
         let color = row.warna;
-        return <CBadge style={{width: '50px'}} color={color}>{row.nama}</CBadge>;
+        return <CBadge color={color} style={{width: '100px', height: '20px', fontSize: '12px', padding: 'auto'}}>{row.nama}</CBadge>;
       },
       sortable: true,
       width: '25%'
@@ -116,8 +144,6 @@ const KecakapanManagement = () => {
         </>
       ),
       ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
       width: '20%'
     }
   ];
@@ -126,7 +152,7 @@ const KecakapanManagement = () => {
     <CCard>
       <CCardHeader className='d-flex justify-content-between align-items-center'>
         <h5>Manajemen Kecakapan</h5>
-        <CButton color="primary" onClick={() => {}}>
+        <CButton color="primary" onClick={() => setShowAddModal(true)}>
           <CIcon icon={cilPlus} className="text-white" />
         </CButton>
       </CCardHeader>
@@ -134,8 +160,6 @@ const KecakapanManagement = () => {
         <DataTable
           data={kecakapan}
           columns={columns}
-          noHeader
-          dense
           highlightOnHover
           striped
           pagination
@@ -182,6 +206,48 @@ const KecakapanManagement = () => {
           </CModalBody>
           <CModalFooter>
             <CButton color="success" onClick={handleUpdate}>Update</CButton>
+          </CModalFooter>
+        </CModal>
+        <CModal visible={showAddModal} onClose={() => setShowAddModal(false)}>
+          <CModalHeader closeButton>
+            <div className="d-flex justify-content-between align-items-center">
+              Tambah Kecakapan
+            </div>
+          </CModalHeader>
+          <CModalBody>
+            <CForm className="px-3 py-2">
+              <CFormLabel htmlFor="nama">Nama Kecakapan</CFormLabel>
+              <CFormInput
+                type="text"
+                id="nama"
+                name="nama"
+                value={newKecakapan.nama}
+                onChange={handleAddChange}
+                placeholder="Masukkan Nama Kecakapan"
+                className="mb-3"
+              />
+              <CFormLabel htmlFor="warna">Warna Label</CFormLabel>
+              <CFormSelect
+                id="warna"
+                name="warna"
+                value={newKecakapan.warna}
+                onChange={handleAddChange}
+                className="mb-3"
+              >
+                <option value="">Pilih Warna Label</option>
+                <option value="primary">Biru</option>
+                <option value="secondary">Abu-Abu</option>
+                <option value="success">Hijau</option>
+                <option value="danger">Merah</option>
+                <option value="warning">Kuning</option>
+                <option value="info">Biru Muda</option>
+                <option value="light">Putih</option>
+                <option value="dark">Hitam</option>
+              </CFormSelect>
+            </CForm>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="primary" onClick={handleAdd}>Tambah</CButton>
           </CModalFooter>
         </CModal>
       </CCardBody>

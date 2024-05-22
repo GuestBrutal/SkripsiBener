@@ -23,18 +23,20 @@ import {
 import CIcon from '@coreui/icons-react'
 import { Link } from 'react-router-dom'
 
-import avatar8 from './../../assets/images/avatars/8.jpg'
 
 const AppHeaderDropdown = () => {
+  const isAdmin = localStorage.getItem('role') === 'admin';
   const dropdownItems = [
-    { icon: cilUser, text: "Profile", to: "/user/profile" },
-    { icon: cilSettings, text: "Settings", to: "#" },
+    { icon: cilUser, text: "Profile", to: isAdmin ? "/admin/profile" : "/user/profile" },
+    { icon: cilSettings, text: "Settings", to: isAdmin ? "/admin/setting" : "/user/setting" },
   ];
 
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+        <CAvatar color='secondary' size="md" status={isAdmin ? 'success' : 'primary'}>
+          <CIcon icon={cilUser} size="lg" />
+        </CAvatar>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>

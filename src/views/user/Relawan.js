@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import {
   CCard,
   CCardBody,
@@ -19,13 +20,42 @@ import relawan from 'src/assets/images/relawan.jpg'
 const Relawan = () => {
   const [modal, setModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
-  const [activities, setActivities] = useState([
-    { id: 1, title: 'Pembersihan Pantai', cover: relawan, registered: false, description: 'Pembersihan sampah di pantai lokal.', mulai: '17-10-2022', selesai: '18-11-2022', location: 'Pantai Kuta' },
-    { id: 2, title: 'Penanaman Pohon', cover: relawan, registered: true, description: 'Penanaman pohon di area hutan.', mulai: '10-11-2022', selesai: '11-12-2022', location: 'Hutan Bakau' },
-    { id: 3, title: 'Pendidikan Anak', cover: relawan, registered: false, description: 'Mengajar anak-anak di daerah terpencil.', mulai: '08-10-2022', selesai: '09-11-2022', location: 'Sekolah Dasar Negeri 1' },
-    { id: 4, title: 'Distribusi Makanan', cover: relawan, registered: true, description: 'Distribusi makanan untuk warga tidak mampu.', mulai: '12-11-2022', selesai: '13-12-2022', location: 'Panti Asuhan Amanah' },
-    // Data kegiatan sama seperti sebelumnya
-  ]);
+  const [activities, setActivities] = useState([]);
+  const [activeActivities, setActiveActivities] = useState([]);
+
+  useEffect(() => {
+    const fetchActiveActivities = async (data) => {
+      try {
+        const userId = localStorage.getItem('UID');
+        const response = await axios.get(`http://localhost:8080/user/${userId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setActiveActivities(data.filter(item => item.no === response.data.kegiatan_id));
+        setActivities(data.filter(item => item.no !== response.data.kegiatan_id));
+      } catch (error) {
+        console.error('Error fetching active activities:', error);
+      }
+    };
+
+    const fetchActivities = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/daftar_kegiatan', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        fetchActiveActivities(response.data);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      }
+    };
+
+    fetchActivities();
+  }, []);
 
   const handleDetails = (activity) => {
     setSelectedActivity(activity);
@@ -45,15 +75,37 @@ const Relawan = () => {
   return (
     <>
       <CCard className="mb-4">
+        <CCardHeader>Kegiatan Aktif</CCardHeader>
+        <CCardBody>
+          <CRow>
+            {activeActivities.map((activity) => (
+              <CCol key={activity.no} xs={12} sm={6} lg={3}>
+                <CCard className="mb-4 p-3">
+                  <img src={relawan} alt="Activity Cover" style={{ width: '100%' }} />
+                  <CCardBody>
+                    <h6 className='mb-5' style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.2rem)' }}>{activity.nama_kegiatan}</h6>
+                    <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+                      <CButton color="primary" onClick={() => handleDetails(activity)}>
+                        <CIcon icon={cilZoom} />
+                      </CButton>
+                    </div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            ))}
+          </CRow>
+        </CCardBody>
+      </CCard>
+      <CCard className="mb-4">
         <CCardHeader>Kegiatan Teregistrasi</CCardHeader>
         <CCardBody>
           <CRow>
             {activities.filter(activity => activity.registered).map((activity) => (
-              <CCol key={activity.id} xs={12} sm={6} lg={3}>
+              <CCol key={activity.no} xs={12} sm={6} lg={3}>
                 <CCard className="mb-4 p-3">
-                  <img src={activity.cover} alt="Activity Cover" style={{ width: '100%' }} />
+                  <img src={relawan} alt="Activity Cover" style={{ width: '100%' }} />
                   <CCardBody>
-                    <h6 className='mb-5' style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.2rem)' }}>{activity.title}</h6>
+                    <h6 className='mb-5' style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.2rem)' }}>{activity.nama_kegiatan}</h6>
                     <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                       <CButton color="primary" onClick={() => handleDetails(activity)}>
                         <CIcon icon={cilZoom} />
@@ -71,17 +123,17 @@ const Relawan = () => {
         <CCardHeader>Kegiatan Tersedia</CCardHeader>
         <CCardBody>
           <CRow>
-            {activities.filter(activity => !activity.registered).map((activity) => (
-              <CCol key={activity.id} xs={12} sm={6} lg={3}>
+            {activities.filter(activity => !(activity.no in activeActivities)).map((activity) => (
+              <CCol key={activity.no} xs={12} sm={6} lg={3}>
                 <CCard className="mb-4 p-3">
-                  <img src={activity.cover} alt="Activity Cover" style={{ width: '100%' }} />
+                  <img src={relawan} alt="Activity Cover" style={{ width: '100%' }} />
                   <CCardBody>
-                    <h6 className='mb-5' style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.2rem)' }}>{activity.title}</h6>
+                    <h6 className='mb-5' style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.2rem)' }}>{activity.nama_kegiatan}</h6>
                     <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                       <CButton color="primary" onClick={() => handleDetails(activity)}>
                         <CIcon icon={cilZoom} />
                       </CButton>
-                      <CButton color="success" onClick={() => handleRegister(activity.id)} className="ms-2">
+                      <CButton color="success" onClick={() => handleRegister(activity.no)} className="ms-2">
                         <CIcon icon={cilCheckCircle} /> Daftar
                       </CButton>
                     </div>
@@ -94,16 +146,16 @@ const Relawan = () => {
       </CCard>
       <CModal visible={modal} onClose={() => setModal(false)}>
         <CModalHeader closeButton>
-          {selectedActivity?.title}
+          {selectedActivity?.nama_kegiatan}
         </CModalHeader>
         <CModalBody>
-          <p>{selectedActivity?.description}</p>
-          <p>Start: {selectedActivity?.mulai}</p>
-          <p>End: {selectedActivity?.selesai}</p>
-          <p>Location: {selectedActivity?.location}</p>
+          <p>{selectedActivity?.deskripsi}</p>
+          <p>Start: {selectedActivity?.tgl_mulai}</p>
+          <p>End: {selectedActivity?.tgl_selesai}</p>
+          <p>Location: {selectedActivity?.lokasi}</p>
         </CModalBody>
         <CModalFooter>
-          {!selectedActivity?.registered && <CButton color="success" onClick={() => { handleRegister(selectedActivity?.id); setModal(false)}}>Daftar</CButton>}
+          {!activeActivities.includes(selectedActivity) && <CButton color="success" onClick={() => { handleRegister(selectedActivity?.no); setModal(false)}}>Daftar</CButton>}
         </CModalFooter>
       </CModal>
     </>

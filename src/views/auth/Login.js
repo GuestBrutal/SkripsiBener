@@ -44,6 +44,7 @@ const Login = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('token_exp', token_exp);
         localStorage.setItem('role', user.role);
+        localStorage.setItem('kegiatan_id', user.kegiatan_id);
         localStorage.setItem('UID', user.id);
         window.location.href = "/"; // Menggunakan window.location.href untuk redirect ke halaman index setelah login berhasil
       } else {

@@ -14,11 +14,14 @@ const AppContent = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const tokenExp = localStorage.getItem('token_exp');
-      const currentTime = Math.floor(Date.now() / 1000); // waktu saat ini dalam detik
-      console.log("time left :", tokenExp - currentTime);
+      const currentTime = Math.floor(Date.now() / 1000);
 
       if (tokenExp && (tokenExp - currentTime) <= 300) {
-        setShowModal(true);
+        if (tokenExp && (tokenExp - currentTime) <= 0) {
+          handleLoginAgain();
+        } else {
+          setShowModal(true);
+        }
       }
     }, 1000);
 
@@ -26,7 +29,7 @@ const AppContent = () => {
   }, [showModal]);
 
   const handleLoginAgain = () => {
-    navigate('/login');
+    navigate('/logout');
     setShowModal(false);
   };
 

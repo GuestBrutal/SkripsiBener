@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cibRedux, cifId } from '@coreui/icons'
+import { cibRedux } from '@coreui/icons'
 import { AppSidebarNav } from './AppSidebarNav'
 
 import SimpleBar from 'simplebar-react'
@@ -14,7 +14,8 @@ import navigation from '../_nav'
 
 const AppSidebar = () => {
   const sidebarShow = useSelector((state) => state.sidebarShow)
-
+  const isAdmin = localStorage.getItem('role') === 'admin';
+  const isActive = localStorage.getItem('kegiatan_id') !== "null";
   return (
     <CSidebar
       position="fixed"
@@ -25,7 +26,7 @@ const AppSidebar = () => {
         {sidebarShow && <span className='mx-2 text-center fw-bold '> Sistem Manajemen Relawan</span>}
       </CSidebarBrand>
       <CSidebarNav className="noScrollbar">
-          <AppSidebarNav items={navigation} />
+          <AppSidebarNav items={navigation(isAdmin,isActive)} />
       </CSidebarNav>
     </CSidebar>
   )

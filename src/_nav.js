@@ -2,14 +2,9 @@ import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
   cilBell,
-  cilCalculator,
   cilChartPie,
   cilPeople,
   cilUser,
-  cilDescription,
-  cilCalendar,
-  cilCalendarCheck,
-  cilNotes,
   cilList,
   cilCash,
   cilSpeedometer,
@@ -17,21 +12,26 @@ import {
   cilNoteAdd,
   cilInfo,
   cilHome,
+  cilRoom,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-const navItems = [
-  { title: 'Admin', isTitle: true },
-  { name: 'Dashboard Admin', to: '/admin/dashboard', icon: cilSpeedometer },
-  { name: 'Daftar Kegiatan', to: '/admin/daftarkegiatan', icon: cilList },
-  { name: 'Manajemen Kecakapan', to: '/admin/kecakapan', icon: cilStar },
-  { name: 'Manajemen Pengguna', to: '/admin/manajemenpengguna', icon: cilUser },
+const navItems = (isAdmin, isActive) => [
+  ...(isAdmin ? [
+    { title: 'Admin', isTitle: true },
+    { name: 'Dashboard Admin', to: '/admin/dashboard', icon: cilSpeedometer },
+    { name: 'Daftar Kegiatan', to: '/admin/daftarkegiatan', icon: cilList },
+    { name: 'Manajemen Kecakapan', to: '/admin/kecakapan', icon: cilStar },
+    { name: 'Manajemen Pengguna', to: '/admin/manajemenpengguna', icon: cilUser },
+  ] : []),
   { title: 'User', isTitle: true },
   { name: 'Beranda', to: '/', icon: cilHome },
-  { name: 'Detail', to: '/user/dashboard', icon: cilInfo, badge: { color: 'info', text: 'NEW' } },
   { name: 'Relawan', to: '/user/relawan', icon: cilList },
+  ...(isActive ? [
+  { title: 'Kegiatan Relawan', isTitle: true },
+  { name: 'Detail', to: '/user/dashboard', icon: cilInfo, },
   { name: 'Target', to: '/user/target', icon: cilBell },
-  { name: 'Charts', to: '/user/charts', icon: cilChartPie },
+  { name: 'Gantt Charts', to: '/user/charts', icon: cilChartPie },
   {
     name: 'Keuangan', icon: cilCash, children: [
       { name: 'Pemasukan', to: '/user/keuangan/pemasukan' },
@@ -45,10 +45,11 @@ const navItems = [
       { name: 'Harian', to: '/user/laporan/mingguan' }
     ]
   },
-  { name: 'Keluar', to: '/logout' },
+] : []),
+  { name: 'Keluar', to: '/logout', icon: cilRoom },
 ];
 
-const _nav = navItems.map(item => {
+const _nav = (isAdmin, isActive) => navItems(isAdmin, isActive).map(item => {
   if (item.isTitle) return { component: CNavTitle, name: item.title };
   if (item.children) {
     return {

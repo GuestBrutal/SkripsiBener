@@ -48,7 +48,7 @@ const Pengeluaran = () => {
       selector: row => row.tanggal,
       sortable: true,
       center: true,
-      format: row => new Date(row.tanggal).toLocaleDateString(),
+      format: row => new Date(row.tanggal).toLocaleDateString('id-ID'),
     },
     {
       name: 'Deskripsi',
