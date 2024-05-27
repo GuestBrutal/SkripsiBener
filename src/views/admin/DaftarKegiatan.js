@@ -26,8 +26,8 @@ const DaftarKegiatan = () => {
   const [pendaftar, setPendaftar] = useState({
     tervalidasi: [],
     belumTervalidasi: [
-      { id: 1, nama: 'John Doe' },
-      { id: 2, nama: 'Jane Doe' }
+      { id: 1, nama: 'John Doe', jabatan: 'Anggota' },
+      { id: 2, nama: 'Jane Doe', jabatan: 'Anggota' }
     ]
   });
 
@@ -344,26 +344,56 @@ const DaftarKegiatan = () => {
             <CFormInput type="text" id="lokasi" placeholder="Lokasi Kegiatan" required value={kegiatanValidasi?.lokasi} readOnly />
 
             <h5 className="mt-4">Pendaftar Tervalidasi</h5>
+            <table className='table table-striped table-bordered'>
+              <thead className='text-center'>
+                <tr>
+                  <th>Nama</th>
+                  <th>Jabatan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendaftar.tervalidasi.length === 0 ? (
+                  <tr>
+                    <td colSpan="2" className="text-center">Belum ada relawan</td>
+                  </tr>
+                ) : (
+                  pendaftar.tervalidasi.map(p => (
+                    <tr key={p.id}>
+                      <td>{p.nama}</td>
+                      <td>{p.jabatan}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
             <ul>
-              {pendaftar.tervalidasi.map(p => (
-                <li key={p.id}>{p.nama}</li>
-              ))}
+
             </ul>
 
             <h5 className="mt-4">Pendaftar Belum Tervalidasi</h5>
-            <ul>
-              {pendaftar.belumTervalidasi.map(p => (
-                <li key={p.id}>
-                  {p.nama}
-                  <CButton size="sm" color="success" className='ms-2' onClick={() => validatePendaftar(p.id)}>
-                    <CIcon icon={cilCheck} />
-                  </CButton>
-                  <CButton size="sm" color="danger" className='ms-2' onClick={() => rejectPendaftar(p.id)}>
-                    <CIcon icon={cilX} />
-                  </CButton>
-                </li>
-              ))}
-            </ul>
+            <table className='table table-striped table-bordered'>
+              <thead className='text-center'>
+                <tr>
+                  <th>Nama</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendaftar.belumTervalidasi.map(p => (
+                    <tr key={p.id}>
+                      <td>{p.nama}</td>
+                      <td>
+                        <CButton size="sm" color="success" className='ms-2' onClick={() => validatePendaftar(p.id)}>
+                          <CIcon icon={cilCheck} />
+                        </CButton>
+                        <CButton size="sm" color="danger" className='ms-2' onClick={() => rejectPendaftar(p.id)}>
+                          <CIcon icon={cilX} />
+                        </CButton>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </CForm>
         </CModalBody>
         <CModalFooter>

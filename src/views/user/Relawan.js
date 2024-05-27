@@ -48,7 +48,14 @@ const Relawan = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-        fetchActiveActivities(response.data);
+        const userId = localStorage.getItem('UID');
+        const activitiesWithRegistration = response.data.map(activity => {
+          if (activity.user.filter(user => user.user_id === userId).length > 0) {
+            return { ...activity, registered: true };
+          }
+          return activity;
+        });
+        fetchActiveActivities(activitiesWithRegistration);
       } catch (error) {
         console.error('Error fetching activities:', error);
       }
@@ -64,13 +71,31 @@ const Relawan = () => {
 
   const handleRegister = (activityId) => {
     const updatedActivities = activities.map(activity => {
-      if (activity.id === activityId) {
+      if (activity.no === activityId) {
         return { ...activity, registered: true };
       }
       return activity;
     });
     setActivities(updatedActivities);
+    const register = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/user/register_kegiatan', {
+          user_id: localStorage.getItem('UID'),
+          kegiatan_id: activityId
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        fetchActiveActivities(response.data);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      }
+    }
+    register();
   };
+
 
   return (
     <>
@@ -109,7 +134,7 @@ const Relawan = () => {
                     <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                       <CButton color="primary" onClick={() => handleDetails(activity)}>
                         <CIcon icon={cilZoom} />
-                        <CBadge color="warning" shape="pill" className="ms-2">Menunggu Validasi</CBadge>
+                        <CBadge color="warning" shape="pill" className="m-2">Menunggu Validasi</CBadge>
                       </CButton>
                     </div>
                   </CCardBody>
@@ -123,7 +148,7 @@ const Relawan = () => {
         <CCardHeader>Kegiatan Tersedia</CCardHeader>
         <CCardBody>
           <CRow>
-            {activities.filter(activity => !(activity.no in activeActivities)).map((activity) => (
+            {activities.filter(activity => !activeActivities.some(active => activeActivities.no === activity.no) && !activity.registered).map((activity) => (
               <CCol key={activity.no} xs={12} sm={6} lg={3}>
                 <CCard className="mb-4 p-3">
                   <img src={relawan} alt="Activity Cover" style={{ width: '100%' }} />
@@ -155,7 +180,7 @@ const Relawan = () => {
           <p>Location: {selectedActivity?.lokasi}</p>
         </CModalBody>
         <CModalFooter>
-          {!activeActivities.includes(selectedActivity) && <CButton color="success" onClick={() => { handleRegister(selectedActivity?.no); setModal(false)}}>Daftar</CButton>}
+          {!activeActivities.includes(selectedActivity) && !selectedActivity?.registered && <CButton color="success" onClick={() => { handleRegister(selectedActivity?.no); setModal(false) }}>Daftar</CButton>}
         </CModalFooter>
       </CModal>
     </>
