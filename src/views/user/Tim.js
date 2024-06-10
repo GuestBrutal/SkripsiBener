@@ -1,83 +1,89 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, createRef } from 'react'
 import classNames from 'classnames'
-import { CRow, CCol, CCard, CCardHeader, CCardBody, CButton } from '@coreui/react'
+import { CRow, CCol, CCard, CCardHeader, CCardBody, CButton, CBadge } from '@coreui/react'
 import { rgbToHex } from '@coreui/utils'
 import { DocsLink } from 'src/components'
 import DataTable from 'react-data-table-component';
+import axios from 'axios';
 
 const Tim = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/tim/' + localStorage.getItem('kegiatan_id'), {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        console.log(response.data);
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const columns = [
     {
       name: 'No',
-      selector: row => row.id,
+      selector: (row, index) => index + 1,
       sortable: true,
-      compact: true,
-      width: '10%', // Menetapkan lebar kolom
+      width: '10%',
+      cell: (row, index) => index + 1,
     },
     {
-      name: 'Nama Kegiatan',
-      selector: row => row.nama,
+      name: 'Nama',
+      selector: row => (
+        <>
+          {row.nama}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px'}} className="my-2">
+            {row.kecakapan ? row.kecakapan.map(skill => (
+              <CBadge color={skill.warna} key={skill.id}>
+                {skill.nama}
+              </CBadge>
+            )) : null}
+          </div>
+        </>
+      ),
       sortable: true,
-      compact: true,
       width: '25%', // Menetapkan lebar kolom
     },
     {
       name: 'Jabatan',
-      selector: row => row.jabatan,
+      selector: row => row.role,
       sortable: true,
-      compact: true,
       width: '20%', // Menetapkan lebar kolom
     },
     {
       name: 'Email',
       selector: row => row.email,
       sortable: true,
-      compact: true,
       width: '20%', // Menetapkan lebar kolom
     },
     {
       name: 'No HP',
-      selector: row => row.ponsel,
+      selector: row => row.telp,
       sortable: true,
-      compact: true,
       width: '25%', // Menetapkan lebar kolom
       cell: row => (
         <>
-          {row.ponsel}
+          {row.telp}
           <CButton
             color="success"
-            href={`https://wa.me/62${row.ponsel.substring(1)}`}
+            href={`https://wa.me/62${row.telp.substring(1)}`}
             target="_blank"
-            style={{ marginLeft: '10px', padding: '0.2rem 0.5rem', fontSize: '0.8rem' }}
+            className="mx-2 btn-sm ms-auto"
           >
             Hubungi
           </CButton>
         </>
       ),
-    },
-  ];
-  const data = [
-    {
-      id: 1,
-      nama: 'Doni',
-      jabatan: 'Ketua Tim',
-      email: 'acron@gmail.com',
-      ponsel: '085161240041',
-    },
-    {
-      id: 2,
-      nama: 'Krisna',
-      jabatan: 'Anggota',
-      email: 'kmbrps@gmail.com',
-      ponsel: '082282240041',
-    },
-    {
-      id: 3,
-      nama: 'Imam',
-      jabatan: 'Anggotaa',
-      email: 'imamakbar@gmail.com',
-      ponsel: '085182240041',
     },
   ];
 

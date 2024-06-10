@@ -20,15 +20,20 @@ const Charts = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }).then(response => {
-          const fetchedTasks = response.data.map((item, index) => ({
-            start: new Date(item.target_mulai),
-            end: new Date(item.target_selesai),
-            name: item.nama_target,
-            id: `Target ${index}`,
-            progress: item.tugas.length > 0 ? (item.tugas.filter(t => t.status === "Terlaksana").length / item.tugas.length) * 100 : 0,
-            type: 'task',
-            dependencies: []
-          }));
+          const fetchedTasks = response.data.map((item, index) => {
+            const endDate = new Date(item.target_selesai);
+            const isOverdue = new Date() > endDate;
+            return {
+              start: new Date(item.target_mulai),
+              end: endDate,
+              name: item.nama_target,
+              id: `Target ${index}`,
+              progress: item.tugas.length > 0 ? (item.tugas.filter(t => t.status === "Terlaksana").length / item.tugas.length) * 100 : 0,
+              type: 'task',
+              dependencies: [],
+              styles: isOverdue ? { backgroundColor: 'red', progressColor: 'lime' } : {}
+            };
+          });
           setTasks(fetchedTasks);
       }).catch(error => {
         console.error('Error fetching tasks:', error);
@@ -47,7 +52,7 @@ const Charts = () => {
               tasks={tasks}
               viewMode="Day"
               columnWidth={60}
-              listCellWidth="155px"
+              listCellWidth="200px"
               locale='id-ID'
             />
           </CCardBody>
@@ -58,4 +63,3 @@ const Charts = () => {
 }
 
 export default Charts
-

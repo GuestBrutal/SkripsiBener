@@ -24,13 +24,6 @@ const Page500 = () => {
                 The page you are looking for is temporarily unavailable.
               </p>
             </span>
-            <CInputGroup className="input-prepend">
-              <CInputGroupText>
-                <CIcon icon={cilMagnifyingGlass} />
-              </CInputGroupText>
-              <CFormInput type="text" placeholder="What are you looking for?" />
-              <CButton color="info">Search</CButton>
-            </CInputGroup>
           </CCol>
         </CRow>
       </CContainer>

@@ -1,4 +1,10 @@
 import React from 'react'
+import { Navigate } from 'react-router-dom'
+
+//role identify
+const Role = () => {
+  return localStorage.getItem('role')
+}
 
 // Lazy imports for User Views
 const DashboardUser = React.lazy(() => import('./views/user/DashboardUser'))
@@ -9,8 +15,8 @@ const Pemasukan = React.lazy(() => import('./views/user/keuangan/pemasukan'))
 const Pengeluaran = React.lazy(() => import('./views/user/keuangan/pengeluaran'))
 const Tim = React.lazy(() => import('./views/user/Tim'))
 const Relawan = React.lazy(() => import('./views/user/Relawan'))
-const LaporanHarian = React.lazy(() => import('./views/user/laporan/LaporanMingguan'))
-const LaporanMingguan = React.lazy(() => import('./views/user/laporan/LaporanHarian'))
+const LaporanHarian = React.lazy(() => import('./views/user/laporan/LaporanHarian'))
+const LaporanMingguan = React.lazy(() => import('./views/user/laporan/LaporanMingguan'))
 const Charts = React.lazy(() => import('./views/user/Charts'))
 const Setting = React.lazy(() => import('./views/user/Setting'))
 
@@ -22,13 +28,14 @@ const AdminProfile = React.lazy(() => import('./views/admin/Profile'))
 const KecakapanManagement = React.lazy(() => import('./views/admin/KecakapanManagement'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home', element: Beranda, requiresAuth: true },
+  { path: '/', exact: true, name: 'Home', element: () => <Navigate to={Role() === 'admin' ? '/admin/dashboard' : (Role() === '-' ? '/user/beranda' : '/user/dashboard')} />, requiresAuth: true },
   { path: '/admin/manajemenpengguna', name: 'Manajemen Pengguna', element: UserManagement, requiresAuth: true },
   { path: '/admin/kecakapan', name: 'Manajemen Kecakapan', element: KecakapanManagement, requiresAuth: true },
   { path: '/admin/dashboard', name: 'Dashboard Admin', element: DashboardAdmin, requiresAuth: true },
   { path: '/admin/profile', name: 'AdminProfile', element: AdminProfile, requiresAuth:true },
   { path: '/user/profile', name: 'Profile', element: Profile, requiresAuth:true },
   { path: '/user/setting', name: 'Setting', element: Setting, requiresAuth:true },
+  { path: '/user/beranda', name: 'Beranda', element: Beranda, requiresAuth:true },
   { path: '/user/dashboard', name: 'Dashboard User', element: DashboardUser, requiresAuth:true },
   { path: '/admin/daftarkegiatan', name: 'Daftar Kegiatan', element: DaftarKegiatan, requiresAuth:true },
   { path: '/user/relawan', name: 'Relawan', element: Relawan, requiresAuth:true },

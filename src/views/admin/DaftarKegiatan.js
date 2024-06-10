@@ -23,13 +23,18 @@ const DaftarKegiatan = () => {
   });
   const [kegiatanEdit, setKegiatanEdit] = useState(null);
   const [kegiatanValidasi, setKegiatanValidasi] = useState(null);
-  const [pendaftar, setPendaftar] = useState({
-    tervalidasi: [],
-    belumTervalidasi: [
-      { id: 1, nama: 'John Doe', jabatan: 'Anggota' },
-      { id: 2, nama: 'Jane Doe', jabatan: 'Anggota' }
-    ]
-  });
+  const [pendaftar, setPendaftar] = useState([
+    {
+      kegiatan_id : '',
+      user : []
+    }
+  ]);
+  const [relawan, setRelawan] = useState([
+    {
+      kegiatan_id : '',
+      user : []
+    }
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -45,7 +50,27 @@ const DaftarKegiatan = () => {
       });
       if (response.status === 200) {
         setData(response.data);
+        response.data.map(item => {
+          setPendaftar(...pendaftar, {
+            kegiatan_id : item.no,
+            user : item.user[0]
+          });
+        });
         setFilteredData(response.data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
+        const valid =  await axios.get('http://localhost:8080/user/', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+        });
+        if (valid.response === 200) {
+          response.data.map(item => {
+            setRelawan(...relawan, {
+              kegiatan_id : item.kegiatan_id,
+              user : valid.data.filter(rel => item.no === rel.kegiatan_id)
+            });
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -83,6 +108,7 @@ const DaftarKegiatan = () => {
   };
 
   const handleEdit = (kegiatan) => {
+    console.log(pendaftar);
     setKegiatanEdit(kegiatan);
     setModalEdit(true);
   };
@@ -127,20 +153,18 @@ const DaftarKegiatan = () => {
   };
 
   const validatePendaftar = (id) => {
-    const updatedBelumTervalidasi = pendaftar.belumTervalidasi.filter(item => item.id !== id);
-    const validated = pendaftar.belumTervalidasi.find(item => item.id === id);
-    setPendaftar({
-      tervalidasi: [...pendaftar.tervalidasi, validated],
-      belumTervalidasi: updatedBelumTervalidasi
-    });
+    const updatedPendaftar = pendaftar.user.filter(item => item.id !== id);
+    const validated = pendaftar.user.find(item => item.id === id);
+    setPendaftar({...pendaftar, user : updatedPendaftar});
+    setRelawan({...relawan, user : [...relawan.user, validated]});
+
+    //TODO : tambahkan logic untuk menambahkan menghapus pendaftar dari kegiatan ke API
+
   };
 
   const rejectPendaftar = (id) => {
-    const updatedBelumTervalidasi = pendaftar.belumTervalidasi.filter(item => item.id !== id);
-    setPendaftar({
-      ...pendaftar,
-      belumTervalidasi: updatedBelumTervalidasi
-    });
+    const updatedPendaftar = pendaftar.user.filter(item => item.id !== id);
+    setPendaftar({...pendaftar, user : updatedPendaftar});
   };
 
   const handleChange = (e) => {
@@ -348,19 +372,17 @@ const DaftarKegiatan = () => {
               <thead className='text-center'>
                 <tr>
                   <th>Nama</th>
-                  <th>Jabatan</th>
                 </tr>
               </thead>
               <tbody>
-                {pendaftar.tervalidasi.length === 0 ? (
+                {relawan.length === 0 ? (
                   <tr>
                     <td colSpan="2" className="text-center">Belum ada relawan</td>
                   </tr>
                 ) : (
-                  pendaftar.tervalidasi.map(p => (
+                  relawan.find(p => p.kegiatan_id === kegiatanValidasi?.no).user.map(p => (
                     <tr key={p.id}>
                       <td>{p.nama}</td>
-                      <td>{p.jabatan}</td>
                     </tr>
                   ))
                 )}
@@ -379,7 +401,7 @@ const DaftarKegiatan = () => {
                 </tr>
               </thead>
               <tbody>
-                {pendaftar.belumTervalidasi.map(p => (
+                {pendaftar.user.map(p => (
                     <tr key={p.id}>
                       <td>{p.nama}</td>
                       <td>
@@ -405,4 +427,5 @@ const DaftarKegiatan = () => {
 }
 
 export default DaftarKegiatan
+
 

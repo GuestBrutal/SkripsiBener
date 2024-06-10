@@ -17,7 +17,7 @@ const Target = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/target', {
+        const response = await axios.get('http://localhost:8080/target/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,

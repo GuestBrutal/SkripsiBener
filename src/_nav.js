@@ -13,39 +13,42 @@ import {
   cilInfo,
   cilHome,
   cilRoom,
+  cilBook,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
-const navItems = (isAdmin, isActive) => [
+const navItems = (isAdmin, userRole) => [
   ...(isAdmin ? [
     { title: 'Admin', isTitle: true },
     { name: 'Dashboard Admin', to: '/admin/dashboard', icon: cilSpeedometer },
     { name: 'Daftar Kegiatan', to: '/admin/daftarkegiatan', icon: cilList },
     { name: 'Manajemen Kecakapan', to: '/admin/kecakapan', icon: cilStar },
     { name: 'Manajemen Pengguna', to: '/admin/manajemenpengguna', icon: cilUser },
-  ] : []),
-  { title: 'User', isTitle: true },
-  { name: 'Beranda', to: '/', icon: cilHome },
-  { name: 'Relawan', to: '/user/relawan', icon: cilList },
-  ...(isActive ? [
-  { title: 'Kegiatan Relawan', isTitle: true },
-  { name: 'Detail', to: '/user/dashboard', icon: cilInfo, },
-  { name: 'Target', to: '/user/target', icon: cilBell },
-  { name: 'Gantt Charts', to: '/user/charts', icon: cilChartPie },
-  {
-    name: 'Keuangan', icon: cilCash, children: [
-      { name: 'Pemasukan', to: '/user/keuangan/pemasukan' },
-      { name: 'Pengeluaran', to: '/user/keuangan/pengeluaran' }
-    ]
-  },
-  { name: 'Tim', to: '/user/tim', icon: cilPeople },
-  {
-    name: 'Laporan', icon: cilNoteAdd, children: [
-      { name: 'Mingguan', to: '/user/laporan/harian' },
-      { name: 'Harian', to: '/user/laporan/mingguan' }
-    ]
-  },
-] : []),
+    { name: 'Laporan Mingguan', to: '/user/laporan/mingguan' },
+
+  ] : [
+    ...(userRole === '-' ? [
+      { title: 'User', isTitle: true },
+      { name: 'Beranda', to: '/user/beranda', icon: cilHome },
+      { name: 'Relawan', to: '/user/relawan', icon: cilList },
+    ] : [
+      { title: 'Kegiatan Relawan', isTitle: true },
+      { name: 'Detail', to: '/user/dashboard', icon: cilInfo, },
+      { name: 'Target', to: '/user/target', icon: cilBell },
+      { name: 'Gantt Charts', to: '/user/charts', icon: cilChartPie },
+      {
+        name: 'Keuangan', icon: cilCash, children: [
+          { name: 'Pemasukan', to: '/user/keuangan/pemasukan' },
+          { name: 'Pengeluaran', to: '/user/keuangan/pengeluaran' }
+        ]
+      },
+        { name: 'Tim', to: '/user/tim', icon: cilPeople },
+        ...(userRole === 'Ketua' ? [
+          { name: 'Laporan Harian', to: '/user/laporan/harian',icon: cilBook }
+
+      ]:[]),
+    ]),
+  ]),
   { name: 'Keluar', to: '/logout', icon: cilRoom },
 ];
 
