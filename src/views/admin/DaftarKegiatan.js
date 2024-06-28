@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { CRow, CCol, CCard, CFormInput, CInputGroup, CInputGroupText, CBadge, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CForm, CFormLabel, CFormSelect } from '@coreui/react'
+import { CRow, CCol, CCard, CFormInput, CInputGroup, CInputGroupText, CBadge, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CForm, CFormLabel, CFormSelect, CFormTextarea, CModalTitle } from '@coreui/react'
 import DataTable from 'react-data-table-component'
 import CIcon from '@coreui/icons-react'
-import { cilSearch, cilPlus, cilPencil, cilTrash, cilCheck, cilX } from '@coreui/icons'
+import { cilSearch, cilPlus, cilPencil, cilTrash, cilCheck, cilX,cilList, cilUser } from '@coreui/icons'
+import Select from 'react-select';
+import provinsiData from '../../assets/Wilayah/provinsi.json';
+import DaftarTarget from './DaftarTarget';
+import DaftarKoordinator from './DaftarKoordinator';
+
 
 const DaftarKegiatan = () => {
   const url = 'http://localhost:8080/daftar_kegiatan';
@@ -12,7 +17,10 @@ const DaftarKegiatan = () => {
   const [modalTambah, setModalTambah] = useState(false);
   const [modalEdit, setModalEdit] = useState(false);
   const [modalValidasi, setModalValidasi] = useState(false);
+  const [visibleTarget, setVisibleTarget] = useState(false);
+  const [visibleKoordinator, setVisibleKoordinator] = useState(false);
   const [data, setData] = useState([]);
+  const [target, setTarget] = useState([]);
   const [kegiatanBaru, setKegiatanBaru] = useState({
     nama_kegiatan: '',
     lokasi: '',
@@ -21,20 +29,10 @@ const DaftarKegiatan = () => {
     tgl_selesai: '',
     status: ''
   });
-  const [kegiatanEdit, setKegiatanEdit] = useState(null);
-  const [kegiatanValidasi, setKegiatanValidasi] = useState(null);
-  const [pendaftar, setPendaftar] = useState([
-    {
-      kegiatan_id : '',
-      user : []
-    }
-  ]);
-  const [relawan, setRelawan] = useState([
-    {
-      kegiatan_id : '',
-      user : []
-    }
-  ]);
+  const [selectedKegiatan, setSelectedKegiatan] = useState(null);
+  const [pendaftar, setPendaftar] = useState([]);
+  const [relawan, setRelawan] = useState([]);
+  const [ketuaDropdown, setKetuaDropdown] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -50,12 +48,11 @@ const DaftarKegiatan = () => {
       });
       if (response.status === 200) {
         setData(response.data);
-        response.data.map(item => {
-          setPendaftar(...pendaftar, {
-            kegiatan_id : item.no,
-            user : item.user[0]
-          });
-        });
+        const Pendaftar = response.data.map(item => ({
+          id_kegiatan: item.no,
+          user: item.user
+        }));
+        setPendaftar(Pendaftar);
         setFilteredData(response.data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
         const valid =  await axios.get('http://localhost:8080/user/', {
         headers: {
@@ -63,13 +60,23 @@ const DaftarKegiatan = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
         });
-        if (valid.response === 200) {
-          response.data.map(item => {
-            setRelawan(...relawan, {
-              kegiatan_id : item.kegiatan_id,
-              user : valid.data.filter(rel => item.no === rel.kegiatan_id)
-            });
-          });
+        if (valid.status === 200) {
+          const groupedRelawan = valid.data.filter(item => item.kegiatan_id !== null).reduce((acc, item) => {
+            if (!acc[item.kegiatan_id]) {
+              acc[item.kegiatan_id] = [];
+            }
+            acc[item.kegiatan_id].push(item);
+            return acc;
+          }, {});
+
+          const Relawan = Object.keys(groupedRelawan).map(id_kegiatan => ({
+            id_kegiatan: parseInt(id_kegiatan),
+            user: groupedRelawan[id_kegiatan].sort((a, b) => b.role === 'Ketua' ? 1 : -1)
+          }));
+
+          const allUser = valid.data;
+          setRelawan(Relawan);
+          setKetuaDropdown(allUser.filter(user => user.kegiatan_id === null && user.role === '-').map(user => ({ value: user.id, label: user.nama })));
         }
       }
     } catch (error) {
@@ -99,7 +106,8 @@ const DaftarKegiatan = () => {
           rab: 0,
           tgl_mulai: '',
           tgl_selesai: '',
-          status: ''
+          status: '',
+          ketua:'',
         });
       }
     } catch (error) {
@@ -108,14 +116,18 @@ const DaftarKegiatan = () => {
   };
 
   const handleEdit = (kegiatan) => {
-    console.log(pendaftar);
-    setKegiatanEdit(kegiatan);
+    const ketuaModel = relawan.filter(item => item.id_kegiatan == kegiatan.no)[0]?.user.filter(item => item.role === 'Ketua')[0];
+    const ketua = { value: ketuaModel?.id??'', label: ketuaModel?.nama??'' };
+    setSelectedKegiatan({ ...kegiatan, ketua: ketua.value });
+    if(!ketuaDropdown.find(item => item.value === ketua.value)) {
+      setKetuaDropdown([ketua,...ketuaDropdown]);
+    }
     setModalEdit(true);
   };
 
   const handleUpdateKegiatan = async () => {
     try {
-      const response = await axios.put(`${url}/${kegiatanEdit.no}`, kegiatanEdit, {
+      const response = await axios.put(`${url}/${selectedKegiatan.no}`, selectedKegiatan, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -126,7 +138,7 @@ const DaftarKegiatan = () => {
         setModalEdit(false);
       }
     } catch (error) {
-      console.error('Error updating activity:', error);
+      console.error('Error updating activity: ', error);
     }
   };
 
@@ -148,28 +160,52 @@ const DaftarKegiatan = () => {
   };
 
   const handleValidasi = (kegiatan) => {
-    setKegiatanValidasi(kegiatan);
+    setSelectedKegiatan(kegiatan);
     setModalValidasi(true);
   };
-
-  const validatePendaftar = (id) => {
-    const updatedPendaftar = pendaftar.user.filter(item => item.id !== id);
-    const validated = pendaftar.user.find(item => item.id === id);
-    setPendaftar({...pendaftar, user : updatedPendaftar});
-    setRelawan({...relawan, user : [...relawan.user, validated]});
-
-    //TODO : tambahkan logic untuk menambahkan menghapus pendaftar dari kegiatan ke API
-
+  const handleTarget = (kegiatan) => {
+    setTarget(kegiatan.target);
+    setVisibleTarget(true);
+    // navigate(`/admin/daftarTarget`, { state: {target: kegiatan.target} });
   };
 
-  const rejectPendaftar = (id) => {
-    const updatedPendaftar = pendaftar.user.filter(item => item.id !== id);
-    setPendaftar({...pendaftar, user : updatedPendaftar});
+  const handleKoordinator = (kegiatan) => {
+    // setKoordinator(kegiatan.koordinator);
+    setSelectedKegiatan(kegiatan);
+    setVisibleKoordinator(true);
+    // navigate(`/admin/daftarKoordinator`);
+  };
+
+  const validatePendaftar = async (aksi,id_kegiatan,id_user) => {
+    try {
+      const response = await axios.put(`${url}/validasi/${aksi}`, {
+        id_kegiatan : id_kegiatan,
+        id_user : id_user
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (response.status === 200) {
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error validating registrant:', error);
+    }
   };
 
   const handleChange = (e) => {
-    setKegiatanEdit({ ...kegiatanEdit, [e.target.id]: e.target.value });
+    if (e.target.id === 'rab' && e.target.value < 0) {
+      e.target.value *= -1;
+    }
+    setSelectedKegiatan({ ...selectedKegiatan, [e.target.id]: e.target.value });
     setKegiatanBaru({ ...kegiatanBaru, [e.target.id]: e.target.value });
+  };
+
+  const handleSelectChange = (selectedOption) => {
+    setKegiatanBaru({ ...kegiatanBaru, ketua: selectedOption.value });
+    setSelectedKegiatan({ ...selectedKegiatan, ketua: selectedOption.value });
   };
 
   const columns = [
@@ -198,7 +234,11 @@ const DaftarKegiatan = () => {
       name: 'Anggaran',
       selector: row => row.rab,
       sortable: true,
-      format: row => `Rp. ${row.rab.toLocaleString('id-ID')}`
+      format: row => parseInt(row.rab).toLocaleString('id-ID',{
+        style: "currency",
+        currency: "IDR",
+        maximumSignificantDigits: 3,
+      })
     },
     {
       name: 'Mulai',
@@ -219,6 +259,20 @@ const DaftarKegiatan = () => {
       cell: row => <CBadge color={row.status === 'Selesai' ? 'success' : row.status === 'Dalam Proses' ? 'warning' : 'danger'}>{row.status}</CBadge>
     },
     {
+      name: 'Detail',
+      cell: row => (
+        <>
+          <CButton size="sm" color="info" className='ms-2 text-white' onClick={() => handleTarget(row)}>
+            <CIcon icon={cilList} />
+          </CButton>
+          <CButton size="sm" color="warning" className='ms-2 text-white' onClick={() => handleKoordinator(row)}>
+            <CIcon icon={cilUser} />
+          </CButton>
+        </>
+      ),
+      ignoreRowClick: true,
+    },
+    {
       name: 'Aksi',
       cell: row => (
         <>
@@ -228,14 +282,12 @@ const DaftarKegiatan = () => {
           <CButton size="sm" color="danger" className='ms-2 text-white' onClick={() => handleHapus(row.no)}>
             <CIcon icon={cilTrash} />
           </CButton>
-          <CButton size="sm" color="primary" className='ms-2 text-white' onClick={() => handleValidasi(row)}>
+          <CButton size="sm" color="success" className='ms-2 text-white' onClick={() => handleValidasi(row)}>
             <CIcon icon={cilCheck} />
           </CButton>
         </>
       ),
       ignoreRowClick: true,
-      allowOverflow: true,
-      button: true
     }
   ];
 
@@ -296,10 +348,16 @@ const DaftarKegiatan = () => {
             <CFormInput type="text" id="deskripsi" placeholder="Masukkan deskripsi kegiatan" required value={kegiatanBaru.deskripsi} onChange={handleChange} />
 
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
-            <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanBaru.lokasi} onChange={handleChange} />
+            <Select
+              id="lokasi"
+              options={provinsiData.data.map(provinsi => ({ value: provinsi.name, label: provinsi.name }))}
+              onChange={selectedOption => setKegiatanBaru({ ...kegiatanBaru, lokasi: selectedOption.value })}
+              isSearchable={true}
+              placeholder="Pilih Lokasi"
+            />
 
             <CFormLabel htmlFor="anggaran">Anggaran</CFormLabel>
-            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" required value={kegiatanBaru.rab} onChange={handleChange} />
+            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" min={0} required value={kegiatanBaru.rab} onChange={handleChange} />
 
             <CFormLabel htmlFor="mulai">Tanggal Mulai</CFormLabel>
             <CFormInput type="date" id="tgl_mulai" required value={kegiatanBaru.tgl_mulai} onChange={handleChange} />
@@ -314,6 +372,15 @@ const DaftarKegiatan = () => {
               <option value="Selesai">Selesai</option>
               <option value="Dibatalkan">Dibatalkan</option>
             </CFormSelect>
+
+            <CFormLabel htmlFor="ketua">Ketua Tim</CFormLabel>
+              <Select
+                id="ketua"
+                options={ketuaDropdown}
+                onChange={handleSelectChange}
+                isSearchable={true}
+                placeholder="Pilih Ketua Tim"
+              />
           </CForm>
         </CModalBody>
         <CModalFooter>
@@ -326,30 +393,47 @@ const DaftarKegiatan = () => {
         <CModalBody>
           <CForm>
             <CFormLabel htmlFor="nama">Nama Kegiatan</CFormLabel>
-            <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={kegiatanEdit?.nama_kegiatan} onChange={handleChange} />
+            <CFormInput type="text" id="nama_kegiatan" placeholder="Masukkan nama kegiatan" required value={selectedKegiatan?.nama_kegiatan} onChange={handleChange} />
 
             <CFormLabel htmlFor="deskripsi">Deskripsi</CFormLabel>
-            <CFormInput type="text" id="deskripsi" placeholder="Masukkan deskripsi kegiatan" required value={kegiatanEdit?.deskripsi} onChange={handleChange} />
+            <CFormInput type="text" id="deskripsi" placeholder="Masukkan deskripsi kegiatan" required value={selectedKegiatan?.deskripsi} onChange={handleChange} />
 
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
-            <CFormInput type="text" id="lokasi" placeholder="Masukkan lokasi kegiatan" required value={kegiatanEdit?.lokasi} onChange={handleChange} />
+            <Select
+              id="lokasi"
+              options={provinsiData.data.map(provinsi => ({ value: provinsi.name, label: provinsi.name }))}
+              onChange={selectedOption => setKegiatanBaru({ ...kegiatanBaru, lokasi: selectedOption.value })}
+              isSearchable={true}
+              placeholder="Pilih Lokasi"
+              defaultValue={selectedKegiatan?.lokasi}
+            />
 
             <CFormLabel htmlFor="anggaran">Anggaran</CFormLabel>
-            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" required value={kegiatanEdit?.rab} onChange={handleChange} />
+            <CFormInput type="number" id="rab" placeholder="Masukkan anggaran kegiatan" min={0} required value={selectedKegiatan?.rab} onChange={handleChange} />
 
             <CFormLabel htmlFor="mulai">Tanggal Mulai</CFormLabel>
-            <CFormInput type="date" id="tgl_mulai" required value={kegiatanEdit?.tgl_mulai} onChange={handleChange} />
+            <CFormInput type="date" id="tgl_mulai" required value={selectedKegiatan?.tgl_mulai} onChange={handleChange} />
 
             <CFormLabel htmlFor="selesai">Tanggal Selesai</CFormLabel>
-            <CFormInput type="date" id="tgl_selesai" required value={kegiatanEdit?.tgl_selesai} onChange={handleChange} />
+            <CFormInput type="date" id="tgl_selesai" required value={selectedKegiatan?.tgl_selesai} onChange={handleChange} />
 
             <CFormLabel htmlFor="status">Status</CFormLabel>
-            <CFormSelect id="status" required value={kegiatanEdit?.status} onChange={handleChange}>
+            <CFormSelect id="status" required value={selectedKegiatan?.status} onChange={handleChange}>
               <option value="">Pilih status kegiatan</option>
               <option value="Dalam Proses">Dalam Proses</option>
               <option value="Selesai">Selesai</option>
               <option value="Dibatalkan">Dibatalkan</option>
             </CFormSelect>
+
+            <CFormLabel htmlFor="ketua">Ketua Tim</CFormLabel>
+              <Select
+                id="ketua"
+                options={ketuaDropdown}
+                onChange={handleSelectChange}
+                isSearchable={true}
+                placeholder="Pilih Ketua Tim"
+                defaultValue={ketuaDropdown[0]}
+              />
           </CForm>
         </CModalBody>
         <CModalFooter>
@@ -357,32 +441,44 @@ const DaftarKegiatan = () => {
           <CButton color="secondary" onClick={() => setModalEdit(false)}>Batal</CButton>
         </CModalFooter>
       </CModal>
+
       <CModal visible={modalValidasi} onClose={() => setModalValidasi(false)}>
         <CModalHeader closeButton>Validasi Pendaftar</CModalHeader>
         <CModalBody>
           <CForm>
             <CFormLabel htmlFor="deskripsi">Deskripsi</CFormLabel>
-            <CFormInput type="text" id="deskripsi" placeholder="Deskripsi Kegiatan" required value={kegiatanValidasi?.deskripsi} readOnly />
-
+            <CFormTextarea id="deskripsi" placeholder="Deskripsi Kegiatan" required value={selectedKegiatan?.deskripsi} readOnly />
             <CFormLabel htmlFor="lokasi">Lokasi</CFormLabel>
-            <CFormInput type="text" id="lokasi" placeholder="Lokasi Kegiatan" required value={kegiatanValidasi?.lokasi} readOnly />
-
+            <CFormInput type="text" id="lokasi" placeholder="Lokasi Kegiatan" required value={selectedKegiatan?.lokasi} readOnly />
             <h5 className="mt-4">Pendaftar Tervalidasi</h5>
             <table className='table table-striped table-bordered'>
               <thead className='text-center'>
                 <tr>
                   <th>Nama</th>
+                  <th>Jabatan</th>
                 </tr>
               </thead>
               <tbody>
-                {relawan.length === 0 ? (
+                {selectedKegiatan && relawan.length === 0 ? (
                   <tr>
                     <td colSpan="2" className="text-center">Belum ada relawan</td>
                   </tr>
                 ) : (
-                  relawan.find(p => p.kegiatan_id === kegiatanValidasi?.no).user.map(p => (
+                  selectedKegiatan && relawan.find(item => item.id_kegiatan == selectedKegiatan?.no)?.user.map(p => (
                     <tr key={p.id}>
-                      <td>{p.nama}</td>
+                      <td>
+                        {p.nama}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '2px'}}>
+                          {p.kecakapan ? p.kecakapan.map(skill => (
+                            <CBadge color={skill.warna} key={skill.id}>
+                              {skill.nama}
+                            </CBadge>
+                          )) : null}
+                        </div>
+                      </td>
+                      <td>
+                        {p.role}
+                      </td>
                     </tr>
                   ))
                 )}
@@ -401,14 +497,23 @@ const DaftarKegiatan = () => {
                 </tr>
               </thead>
               <tbody>
-                {pendaftar.user.map(p => (
+                {selectedKegiatan && pendaftar.find(item => item.id_kegiatan == selectedKegiatan?.no)?.user.map(p => (
                     <tr key={p.id}>
-                      <td>{p.nama}</td>
+                    <td>
+                      {p.nama}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '2px'}}>
+                        {p.kecakapan ? p.kecakapan.map(skill => (
+                          <CBadge color={skill.warna} key={skill.id}>
+                            {skill.nama}
+                          </CBadge>
+                        )) : null}
+                      </div>
+                    </td>
                       <td>
-                        <CButton size="sm" color="success" className='ms-2' onClick={() => validatePendaftar(p.id)}>
+                        <CButton size="sm" color="success" className='ms-2' onClick={() => validatePendaftar('accept',selectedKegiatan?.no,p.id)}>
                           <CIcon icon={cilCheck} />
                         </CButton>
-                        <CButton size="sm" color="danger" className='ms-2' onClick={() => rejectPendaftar(p.id)}>
+                        <CButton size="sm" color="danger" className='ms-2' onClick={() => validatePendaftar('reject',selectedKegiatan?.no,p.id)}>
                           <CIcon icon={cilX} />
                         </CButton>
                       </td>
@@ -422,10 +527,48 @@ const DaftarKegiatan = () => {
           <CButton color="secondary" onClick={() => setModalValidasi(false)}>Tutup</CButton>
         </CModalFooter>
       </CModal>
+
+      <CModal
+        visible={visibleTarget}
+        onClose={() => {setVisibleTarget(false); setTarget([])}}
+        size="lg"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Daftar Target</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <DaftarTarget target={target} setTarget={setTarget} />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => {setVisibleTarget(false); setTarget([])}}>
+            Tutup
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      <CModal
+        visible={visibleKoordinator}
+        onClose={() => {setVisibleKoordinator(false);}}
+        size="lg"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Koordinator Kecakapan</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <DaftarKoordinator props={selectedKegiatan}/>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => {setVisibleKoordinator(false)}}>
+            Tutup
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </CCard>
   )
 }
 
 export default DaftarKegiatan
+
+
 
 

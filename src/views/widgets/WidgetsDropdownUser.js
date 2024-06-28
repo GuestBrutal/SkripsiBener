@@ -73,7 +73,6 @@ const WidgetsDropdownUser = () => {
         const selesai = tugas.filter(tugas => tugas.status === 'Terlaksana').length;
         const dalamPelaksanaan = tugas.filter(tugas => (tugas.status === 'Belum Terlaksana' && !tugasTerlewat.includes(tugas))).length;
         let tidakTerlaksana = 0;
-        console.log(tugasTerlewat);
         const jumlah = tugas.length;
         if (tugasTerlewat.length > 0) {
           tidakTerlaksana += tugasTerlewat.filter(tugas => tugas.status !== 'Terlaksana').length;

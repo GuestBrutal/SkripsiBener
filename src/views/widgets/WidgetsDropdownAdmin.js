@@ -1,11 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CRow, CCol, CWidgetStatsA } from '@coreui/react'
 import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
+import axios from 'axios';
 
 const WidgetsDropdownAdmin = () => {
+
+  const [dataKegiatan, setDataKegiatan] = useState([]);
+
+
+  useEffect(() => {
+    const fetchDataKegiatan = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/daftar_kegiatan', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setDataKegiatan(response.data);
+      } catch (error) {
+        console.error('Error saat fetch data kegiatan:', error);
+      }
+    };
+    fetchDataKegiatan();
+  }, []);
+
   return (
     <CRow>
       <h4>Aksi Relawan</h4>
@@ -15,7 +37,7 @@ const WidgetsDropdownAdmin = () => {
           color="warning"
           value={
             <>
-              4 <span className="fs-6 fw-normal">(40%)</span>
+              {dataKegiatan.filter(item => item.status === "Dalam Proses").length} <span className="fs-6 fw-normal">({(dataKegiatan.filter(item => item.status === "Dalam Proses").length / dataKegiatan.length * 100).toFixed(0)}%)</span>
             </>
           }
           title="Dalam Pelaksanaan"
@@ -72,7 +94,7 @@ const WidgetsDropdownAdmin = () => {
           color="success"
           value={
             <>
-              6 <span className="fs-6 fw-normal">(60%)</span>
+              {dataKegiatan.filter(item => item.status === "Selesai").length} <span className="fs-6 fw-normal">({(dataKegiatan.filter(item => item.status === "Selesai").length / dataKegiatan.length * 100).toFixed(0)}%)</span>
             </>
           }
           title="Selesai"

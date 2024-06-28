@@ -44,9 +44,9 @@ const Login = () => {
         localStorage.setItem('token', token);
         localStorage.setItem('token_exp', token_exp);
         localStorage.setItem('role', user.role);
-        localStorage.setItem('kegiatan_id', user.kegiatan_id);
+        localStorage.setItem('kegiatan_id', (user.kegiatan_id !== null) ? user.kegiatan_id : 0);
         localStorage.setItem('UID', user.id);
-        window.location.href = "/"; // Menggunakan window.location.href untuk redirect ke halaman index setelah login berhasil
+        window.location.href = "/";
       } else {
         setFormData({ ...formData, error: response.data.message || 'Login failed' });
       }
@@ -99,11 +99,6 @@ const Login = () => {
                       <CCol xs={6}>
                         <CButton type="submit" color="light" className="px-4">
                           Masuk
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="white" className="text-white px-0">
-                          Lupa kata sandi?
                         </CButton>
                       </CCol>
                     </CRow>

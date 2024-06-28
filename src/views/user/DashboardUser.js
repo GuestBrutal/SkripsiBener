@@ -235,7 +235,7 @@ const exportToExcel = async () => {
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                RAB / Realisasi per Awal Bulan
+                RAB / Realisasi
               </h4>
               <CRow>
                 <CCol xs={12}>

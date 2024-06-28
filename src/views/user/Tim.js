@@ -19,7 +19,6 @@ const Tim = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        console.log(response.data);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -47,7 +46,10 @@ const Tim = () => {
               <CBadge color={skill.warna} key={skill.id}>
                 {skill.nama}
               </CBadge>
-            )) : null}
+            )) : (row.nama_kecakapan ?
+              <CBadge color={row.warna_label} key={row.id_kecakapan}>
+                {row.nama_kecakapan}
+              </CBadge> : null)}
           </div>
         </>
       ),
@@ -56,7 +58,7 @@ const Tim = () => {
     },
     {
       name: 'Jabatan',
-      selector: row => row.role,
+      selector: row => row.role ? row.role : 'Koordinator ' + row.nama_kecakapan,
       sortable: true,
       width: '20%', // Menetapkan lebar kolom
     },

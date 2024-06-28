@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CCard, CCardBody, CCol, CCardHeader, CRow } from '@coreui/react'
+import { CCard, CCardBody, CCol, CCardHeader, CRow, CFormCheck } from '@coreui/react'
 import { Gantt } from 'gantt-task-react'
 import 'gantt-task-react/dist/index.css'
 import axios from 'axios'
@@ -46,7 +46,7 @@ const Charts = () => {
     <CRow>
       <CCol xs={12}>
         <CCard className="mb-4">
-          <CCardHeader>Gantt Chart</CCardHeader>
+          <CCardHeader className='fw-bold'>Gantt Chart</CCardHeader>
           <CCardBody>
             <Gantt
               tasks={tasks}

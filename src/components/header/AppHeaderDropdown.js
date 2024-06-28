@@ -25,21 +25,21 @@ import { Link } from 'react-router-dom'
 
 
 const AppHeaderDropdown = () => {
-  const isAdmin = localStorage.getItem('role') === 'admin';
-  const dropdownItems = [
-    { icon: cilUser, text: "Profile", to: isAdmin ? "/admin/profile" : "/user/profile" },
-    { icon: cilSettings, text: "Settings", to: isAdmin ? "/admin/setting" : "/user/setting" },
+  const role = localStorage.getItem('role');
+  const dropdownItems = (role === 'admin' || role === 'koordinator') ? [] : [
+    { icon: cilUser, text: "Profile", to: "/user/profile" },
+    { icon: cilSettings, text: "Settings", to: "/user/setting" },
   ];
 
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar color='secondary' size="md" status={isAdmin ? 'success' : 'primary'}>
+        <CAvatar color='secondary' size="md" status={role === 'admin' || role === 'koordinator' ? 'success' : 'primary'}>
           <CIcon icon={cilUser} size="lg" />
         </CAvatar>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
+        <CDropdownHeader className="bg-light fw-semibold py-2">{role === '-' ? 'Settings' : role.charAt(0).toUpperCase() + role.slice(1)}</CDropdownHeader>
         {dropdownItems.map((item, index) => (
           <CDropdownItem component={Link} to={item.to} key={index}>
             <CIcon icon={item.icon} className="me-2" />

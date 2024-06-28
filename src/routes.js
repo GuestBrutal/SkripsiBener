@@ -6,6 +6,10 @@ const Role = () => {
   return localStorage.getItem('role')
 }
 
+const kegiatan_id = () => {
+  return localStorage.getItem('kegiatan_id')
+}
+
 // Lazy imports for User Views
 const DashboardUser = React.lazy(() => import('./views/user/DashboardUser'))
 const Beranda = React.lazy(() => import('./views/user/Beranda'))
@@ -26,9 +30,11 @@ const DaftarKegiatan = React.lazy(() => import('./views/admin/DaftarKegiatan'))
 const UserManagement = React.lazy(() => import('./views/admin/UserManagement'))
 const AdminProfile = React.lazy(() => import('./views/admin/Profile'))
 const KecakapanManagement = React.lazy(() => import('./views/admin/KecakapanManagement'))
+const DaftarTarget = React.lazy(() => import('./views/admin/DaftarTarget'))
+const DaftarKoordinator = React.lazy(() => import('./views/admin/DaftarKoordinator'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home', element: () => <Navigate to={Role() === 'admin' ? '/admin/dashboard' : (Role() === '-' ? '/user/beranda' : '/user/dashboard')} />, requiresAuth: true },
+  { path: '/', exact: true, name: 'Home', element: () => <Navigate to={Role() === 'admin' ? '/admin/dashboard' : (kegiatan_id() == 0 ? '/user/beranda' : '/user/dashboard')} />, requiresAuth: true },
   { path: '/admin/manajemenpengguna', name: 'Manajemen Pengguna', element: UserManagement, requiresAuth: true },
   { path: '/admin/kecakapan', name: 'Manajemen Kecakapan', element: KecakapanManagement, requiresAuth: true },
   { path: '/admin/dashboard', name: 'Dashboard Admin', element: DashboardAdmin, requiresAuth: true },
@@ -46,6 +52,9 @@ const routes = [
   { path: '/user/laporan/harian', name: 'Harian', element: LaporanHarian, requiresAuth:true },
   { path: '/user/target', name: 'Target', element: Target, requiresAuth:true },
   { path: '/user/laporan/mingguan', name: 'Mingguan', element: LaporanMingguan, requiresAuth:true },
+  { path: '/admin/daftarTarget', name: 'Daftar Target', element: DaftarTarget, requiresAuth:true },
+  { path: '/admin/daftarKoordinator', name: 'Daftar Koordinator', element: DaftarKoordinator, requiresAuth:true },
+
 ]
 
 export default routes

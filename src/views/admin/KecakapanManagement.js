@@ -135,10 +135,10 @@ const KecakapanManagement = () => {
       name: 'Aksi',
       cell: (row) => (
         <>
-          <CButton size="sm" color="info" onClick={() => handleEdit(row)}>
+          <CButton className='text-white' size="sm" color="info" onClick={() => handleEdit(row)}>
             <CIcon icon={cilPencil} />
           </CButton>
-          <CButton size="sm" color="danger" className="m-2" onClick={() => handleDelete(row.id)}>
+          <CButton size="sm" color="danger" className="m-2 text-white" onClick={() => handleDelete(row.id)}>
             <CIcon icon={cilTrash} />
           </CButton>
         </>
@@ -152,8 +152,8 @@ const KecakapanManagement = () => {
     <CCard>
       <CCardHeader className='d-flex justify-content-between align-items-center'>
         <h5>Manajemen Kecakapan</h5>
-        <CButton color="primary" onClick={() => setShowAddModal(true)}>
-          <CIcon icon={cilPlus} className="text-white" />
+        <CButton color="success" onClick={() => setShowAddModal(true)}>
+          <CIcon icon={cilPlus} />
         </CButton>
       </CCardHeader>
       <CCardBody>

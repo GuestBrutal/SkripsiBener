@@ -24,7 +24,8 @@ const Pengeluaran = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/user/'+localStorage.getItem('UID'), {
+        const url = localStorage.getItem('role') === 'koordinator' ? 'http://localhost:8080/koordinatorKecakapan/' : 'http://localhost:8080/user/';
+        const response = await axios.get(url+localStorage.getItem('UID'), {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,

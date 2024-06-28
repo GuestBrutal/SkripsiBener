@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import {
   CAvatar,
@@ -67,37 +68,124 @@ import WidgetsDropdownAdmin from '../widgets/WidgetsDropdownAdmin'
 
 const DashboardAdmin = () => {
   const [visible, setVisible] = useState(false);
+  const [dataPengeluaran, setDataPengeluaran] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/pengeluaran',{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+      .then(response => {
+        setDataPengeluaran(response.data);
+      })
+      .catch(error => {
+        console.error('Ada kesalahan dalam mengambil data pengeluaran:', error);
+      });
+  }, []);
+
+const exportToExcel = async () => {
+  try {
+    const pengeluaranResponse = await axios.get('http://localhost:8080/pengeluaran/', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    const pengeluaranData = pengeluaranResponse.data.map(item => ({
+      Tanggal: item.tanggal_pengeluaran,
+      Keterangan: item.deskripsi_pengeluaran,
+      Debit: '',
+      Kredit: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.total_pengeluaran)
+    }));
+
+    const combinedData = [...pemasukanData, ...pengeluaranData];
+
+    // Mengurutkan data berdasarkan 'Tanggal'
+    combinedData.sort((a, b) => new Date(a.Tanggal) - new Date(b.Tanggal));
+
+    // Menambahkan total di footer
+    const totalKredit = pengeluaranResponse.data.reduce((acc, item) => acc + parseInt(item.total_pengeluaran), 0);
+
+    combinedData.push({
+      Tanggal: '',
+      Keterangan: 'Total',
+      Debit: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalDebit),
+      Kredit: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(totalKredit)
+    });
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Data');
+
+      // Menambahkan header
+      worksheet.columns = [
+        { header: 'Tanggal', key: 'Tanggal',width: 15 },
+        { header: 'Keterangan', key: 'Keterangan',width: 30 },
+        { header: 'Debit', key: 'Debit',width: 20 },
+        { header: 'Kredit', key: 'Kredit',width: 20 }
+      ];
+      // Menambahkan data
+      combinedData.forEach((data, index) => {
+        const row = worksheet.addRow(data);
+      });
+
+    worksheet.mergeCells(combinedData.length+1,1,combinedData.length+1,2);
+    const header = worksheet.getRow(1);
+    header.height = 25;
+    const footer = worksheet.lastRow;
+    footer.height = 25;
+    worksheet.getCell(combinedData.length+1,1).value = "Total";
+      // Menambahkan border dan format mata uang
+      worksheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
+        row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+          };
+          cell.font = {
+            name: 'Calibri',
+            size: 12
+          };
+          if (rowNumber === 1 || rowNumber === combinedData.length + 1) {
+            row.eachCell({ includeEmpty: true }, function (cell) {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'D3D3D3' } // Warna abu-abu terang
+              };
+              cell.font = {
+                name: 'Calibri',
+                size: 12,
+                bold: true
+              };
+              cell.alignment = {
+                horizontal: 'center',
+                vertical:'middle'
+              };
+            });
+          }
+        });
+      });
+
+    // Menyimpan file
+      const todayDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('_').join('');
+      const todayHour = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).split('.').join('');
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `RAB_Realisasi_${todayDate}${todayHour}.xlsx`;
+      link.click();
+    } catch (error) {
+      console.error('Error exporting data:', error);
+    }
+};
+
 
   return (
     <>
-      <div className="d-flex justify-content-end">
-        <CButton color="success" onClick={() => setVisible(!visible)} className="me-3 mt-3">
-          <CIcon icon={cilPlus} />
-        </CButton>
-      </div>
-      <CModal visible={visible} onClose={() => setVisible(false)}>
-        <CModalHeader>
-          <CModalTitle>Tambah Kegiatan</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <CForm>
-            <div className="mb-3">
-              <CFormLabel htmlFor="activityName">Nama Kegiatan</CFormLabel>
-              <CFormInput type="text" id="activityName" />
-            </div>
-            <div className="mb-3">
-              <CFormLabel htmlFor="activityDescription">Deskripsi Kegiatan</CFormLabel>
-              <CFormTextarea id="activityDescription" rows="3"></CFormTextarea>
-            </div>
-          </CForm>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisible(false)}>
-            Tutup
-          </CButton>
-          <CButton color="primary">Simpan Kegiatan</CButton>
-        </CModalFooter>
-      </CModal>
       <WidgetsDropdownAdmin />
       <CCard className="mb-4">
         <CCardBody>
@@ -107,16 +195,11 @@ const DashboardAdmin = () => {
                 Laporan Pengeluaran
               </h4>
             </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-            </CCol>
           </CRow>
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
             data={{
-              labels: ['January', 'February', 'March'],
+              labels: dataPengeluaran.map(item => item.tanggal),
               datasets: [
                 {
                   label: 'Realisasi',
@@ -124,7 +207,7 @@ const DashboardAdmin = () => {
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  data: [2500000, 10000000, 4000000],
+                  data: dataPengeluaran.map(item => item.pengeluaran),
                 },
               ],
             }}
@@ -166,100 +249,6 @@ const DashboardAdmin = () => {
         </CCardBody>
       </CCard>
 
-      <CCard className="mb-4">
-        <CCardBody>
-          <CRow>
-            <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                Data Korban
-              </h4>
-              <CRow>
-                <CCol xs={6}>
-                  <div className="text-medium-emphasis small">Meninggal</div>
-                  <div className="small text-medium-emphasis">15.000.000</div>
-                </CCol>
-                <CCol xs={6} className="text-end">
-                  <div className="success-emphasis small">Luka-luka</div>
-                  <div className="small text-medium-emphasis">9.500.000</div>
-                </CCol>
-              </CRow>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-            </CCol>
-          </CRow>
-          <CChartBar
-            style={{ height: '300px', marginTop: '40px' }}
-            data={{
-              labels: ['January', 'February', 'March'],
-              datasets: [
-                {
-                  label: 'RAB',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
-                  borderColor: getStyle('--cui-info'),
-                  pointHoverBackgroundColor: getStyle('--cui-info'),
-                  borderWidth: 2,
-                  data: [5000000, 5000000, 5000000],
-                  fill: true,
-                },
-                {
-                  label: 'Realisasi',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-success'),
-                  pointHoverBackgroundColor: getStyle('--cui-success'),
-                  borderWidth: 2,
-                  data: [2500000, 3000000, 4000000],
-                },
-                {
-                  label: 'My Third dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-danger'),
-                  pointHoverBackgroundColor: getStyle('--cui-danger'),
-                  borderWidth: 1,
-                  borderDash: [8, 5],
-                  data: [65, 65, 65, 65, 65, 65, 65],
-                },
-              ],
-            }}
-            options={{
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              scales: {
-                x: {
-                  grid: {
-                    drawOnChartArea: false,
-                  },
-                },
-                y: {
-                  ticks: {
-                    beginAtZero: true,
-                    maxTicksLimit: 5,
-                    stepSize: Math.ceil(250 / 5),
-                    max: 250,
-                  },
-                },
-              },
-              elements: {
-                line: {
-                  tension: 0.4,
-                },
-                point: {
-                  radius: 0,
-                  hitRadius: 10,
-                  hoverRadius: 4,
-                  hoverBorderWidth: 3,
-                },
-              },
-            }}
-          />
-        </CCardBody>
-      </CCard>
     </>
   )
 }
