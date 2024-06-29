@@ -82,9 +82,9 @@ const WidgetsDropdownUser = () => {
           setTugasDalamPelaksanaan({jumlah: 0, persentase: 0});
           setTugasTidakTerlaksana({jumlah: 0, persentase: 0});
         }else {
-          setTugasSelesai({jumlah: selesai, persentase: (selesai / jumlah) * 100});
-          setTugasDalamPelaksanaan({jumlah: dalamPelaksanaan, persentase: (dalamPelaksanaan / jumlah) * 100});
-          setTugasTidakTerlaksana({jumlah: tidakTerlaksana, persentase: (tidakTerlaksana / jumlah) * 100});
+          setTugasSelesai({jumlah: selesai, persentase: (selesai / jumlah).toFixed(2) * 100});
+          setTugasDalamPelaksanaan({jumlah: dalamPelaksanaan, persentase: (dalamPelaksanaan / jumlah).toFixed(2) * 100});
+          setTugasTidakTerlaksana({jumlah: tidakTerlaksana, persentase: (tidakTerlaksana / jumlah).toFixed(2) * 100});
         }
         setTugas(tugas);
       } catch (error) {

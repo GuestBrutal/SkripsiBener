@@ -21,8 +21,8 @@ const Pengeluaran = () => {
   const [editItem, setEditItem] = useState(null);
   const fileInputRef = useRef();
 
-  useEffect(() => {
-    const fetchData = async () => {
+
+  const fetchData = async () => {
       try {
         const url = localStorage.getItem('role') === 'koordinator' ? 'http://localhost:8080/koordinatorKecakapan/' : 'http://localhost:8080/user/';
         const response = await axios.get(url+localStorage.getItem('UID'), {
@@ -42,8 +42,9 @@ const Pengeluaran = () => {
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
-    };
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -143,7 +144,6 @@ const Pengeluaran = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append('id_kegiatan', kegiatan);
-    console.log(formData.get('nota_pengeluaran'));
     if (formData.get('nota_pengeluaran').size === 0) {
       formData.delete('nota_pengeluaran');
     }
@@ -189,16 +189,16 @@ const Pengeluaran = () => {
       qty_pengeluaran: parseInt(event.target.banyakbarang.value),
       total_pengeluaran: parseInt(event.target.harga.value) * parseInt(event.target.banyakbarang.value),
     };
-    axios.put(`http://localhost:8080/pengeluaran/${editItem.id}`, updatedPengeluaran, {
+    axios.post(`http://localhost:8080/updatePengeluaran/${editItem.id}`, updatedPengeluaran, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
       .then(response => {
-        setItems(items.map(item => item.id === editItem.id ? updatedPengeluaran : item));
         setModalVisible(false);
         setEditItem(null);
+        fetchData();
       })
       .catch(error => {
         console.error('Error updating item: ', error);
@@ -289,11 +289,11 @@ const Pengeluaran = () => {
           <form onSubmit={editItem ? handleUpdatePengeluaran : handleAddPengeluaran} encType="multipart/form-data" >
             <div className="mb-3">
               <label htmlFor="tanggal">Tanggal:</label>
-              <CFormInput id="tanggal" name='tanggal_pengeluaran' type="date" max={new Date().toISOString().split('T')[0]} required defaultValue={editItem ? editItem.tanggal_pengeluaran : ''} />
+              <CFormInput required id="tanggal" name='tanggal_pengeluaran' type="date" max={new Date().toISOString().split('T')[0]} defaultValue={editItem ? editItem.tanggal_pengeluaran : ''} />
             </div>
             <div className="mb-3">
               <label htmlFor="deskripsi">Deskripsi:</label>
-              <CFormInput id="deskripsi"name='deskripsi_pengeluaran' type="text" required defaultValue={editItem ? editItem.deskripsi_pengeluaran : ''} />
+              <CFormInput required id="deskripsi"name='deskripsi_pengeluaran' type="text" defaultValue={editItem ? editItem.deskripsi_pengeluaran : ''} />
             </div>
             <div className="mb-3 d-flex justify-content-between flex-wrap">
               <label id='notaName'>Nota : {editItem ? editItem.nota_pengeluaran ? editItem.nota_pengeluaran : 'Tidak Ada' : '(Opsional)'}</label>
@@ -306,7 +306,6 @@ const Pengeluaran = () => {
                 {editItem && editItem.nota_pengeluaran ? "Ubah Nota" : "Tambah Nota"}
               </CButton>
               <CFormInput id="nota" name="nota_pengeluaran" type="file" accept="image/jpeg, image/png, image/jpg" ref={fileInputRef} onChange={e => {
-                console.log(e.target.files);
                 if (e.target.files.length > 0) {
                   fileInputRef.current.files = e.target.files;
                   document.getElementById('notaName').innerText = 'Nota : ' + fileInputRef.current.files[0].name;
@@ -317,21 +316,21 @@ const Pengeluaran = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="harga">Harga:</label>
-              <CFormInput id="harga" name="harga_pengeluaran" type="number" required min="0" defaultValue={editItem ? editItem.harga_pengeluaran : ''} onChange={e => {
+              <CFormInput required id="harga" name="harga_pengeluaran" type="number" min="0" defaultValue={editItem ? editItem.harga_pengeluaran : ''} onChange={e => {
                 const updatedTotal = parseInt(e.target.value) * parseInt(document.getElementById('banyakbarang').value || 0);
                 document.getElementById('total').value = isNaN(updatedTotal) ? '' : updatedTotal;
               }} />
             </div>
             <div className="mb-3">
               <label htmlFor="banyakbarang">Banyak Barang:</label>
-              <CFormInput id="banyakbarang" name="qty_pengeluaran" type="number" required min="1" defaultValue={editItem ? editItem.qty_pengeluaran : ''} onChange={e => {
+              <CFormInput required id="banyakbarang" name="qty_pengeluaran" type="number" min="1" defaultValue={editItem ? editItem.qty_pengeluaran : ''} onChange={e => {
                 const updatedTotal = parseInt(e.target.value) * parseInt(document.getElementById('harga').value || 0);
                 document.getElementById('total').value = isNaN(updatedTotal) ? '' : updatedTotal;
               }} />
             </div>
             <div className="mb-3">
               <label htmlFor="total">Total:</label>
-              <CFormInput id="total" name="total_pengeluaran" type="number" required readOnly defaultValue={editItem ? editItem.total_pengeluaran : ''} />
+              <CFormInput required id="total" name="total_pengeluaran" type="number" readOnly defaultValue={editItem ? editItem.total_pengeluaran : ''} />
             </div>
             <CButton type="submit" color="danger">{editItem ? 'Update' : 'Simpan'}</CButton>
           </form>

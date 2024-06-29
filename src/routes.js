@@ -50,7 +50,7 @@ const routes = [
   { path: '/user/keuangan/pengeluaran', name: 'Pengeluaran', element: Pengeluaran, requiresAuth:true },
   { path: '/user/tim', name: 'Tim', element: Tim, requiresAuth:true },
   { path: '/user/laporan/harian', name: 'Harian', element: LaporanHarian, requiresAuth:true },
-  { path: '/user/target', name: 'Target', element: Target, requiresAuth:true },
+  { path: '/user/target', name: 'Target', element:Target, requiresAuth:true },
   { path: '/user/laporan/mingguan', name: 'Mingguan', element: LaporanMingguan, requiresAuth:true },
   { path: '/admin/daftarTarget', name: 'Daftar Target', element: DaftarTarget, requiresAuth:true },
   { path: '/admin/daftarKoordinator', name: 'Daftar Koordinator', element: DaftarKoordinator, requiresAuth:true },

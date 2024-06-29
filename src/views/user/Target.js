@@ -7,6 +7,7 @@ import { DocsLink } from 'src/components'
 import CIcon from '@coreui/icons-react'
 import { cilSearch, cilList } from '@coreui/icons'
 import axios from 'axios';
+import DaftarTarget from '../admin/DaftarTarget';
 
 const Target = () => {
   const [filterText, setFilterText] = useState('');
@@ -42,13 +43,13 @@ const Target = () => {
       selector: row => {
         const total = row.tugas.length > 0 ? row.tugas.length : 0;
         const done = row.tugas.filter(t => t.status === "Terlaksana").length > 0 ? row.tugas.filter(t => t.status === "Terlaksana").length : 0;
-        return total > 0 ? (done / total) * 100 : 0;
+        return total > 0 ? (done / total).toFixed(2) * 100 : 0;
       },
       sortable: true,
       cell: row => {
         const total = row.tugas.length > 0 ? row.tugas.length : 0;
         const done = row.tugas.filter(t => t.status === "Terlaksana").length > 0 ? row.tugas.filter(t => t.status === "Terlaksana").length : 0;
-        return renderCircularProgressBar(total > 0 ? (done / total) * 100 : 0);
+        return renderCircularProgressBar(total > 0 ? (done / total).toFixed(2) * 100 : 0);
       }
     },
     {
@@ -78,6 +79,10 @@ const Target = () => {
   const handleShowTasks = (tasks) => {
     setSelectedTasks(tasks);
     setModalVisible(true);
+  }
+
+  if(localStorage.getItem('role') == 'Ketua'){
+    return <DaftarTarget target={data} setTarget={setData}/>
   }
 
   return (

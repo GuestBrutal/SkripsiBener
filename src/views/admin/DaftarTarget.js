@@ -89,7 +89,7 @@ const DaftarTarget = ({target,setTarget}) => {
           <CCardHeader className='d-flex justify-content-between'>
             <h4>{kategori.nama_target}</h4>
             <div className='d-flex'>
-              {showInput && (
+              {showInput && kategoriId == kategori.no && (
                 <>
                   <CFormInput
                     type="text"

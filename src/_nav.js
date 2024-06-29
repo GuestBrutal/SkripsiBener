@@ -43,8 +43,8 @@ const navItems = (role,kegiatan_id) => [
           ]
         },
         { name: 'Tim', to: '/user/tim', icon: cilPeople },
+        { name: 'Target', to: '/user/target', icon: cilBell },
         ...(role === 'Ketua' ? [
-          { name: 'Target', to: '/user/target', icon: cilBell },
           { name: 'Laporan Mingguan', to: '/user/laporan/mingguan',icon: cilBook },
         ] : [
           ...(role === 'koordinator' ? [

@@ -47,6 +47,22 @@ const LaporanMingguan = () => {
     fetchKegiatan();
   }, []);
 
+  const handleValidasi = async (id) => {
+    try {
+        const response = await axios.post(`http://localhost:8080/validasiLaporan/${id}`, {
+          status: 'valid'
+        }, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+      setKegiatan(kegiatan.map(item => item.id === id ? { ...item, status: 'valid' } : item));
+      setShowLaporan(false);
+      } catch (error) {
+        console.error('Error fetching kegiatan:', error);
+      }
+  }
+
   return (
     <CRow>
       <CCol sm="3">
@@ -84,7 +100,7 @@ const LaporanMingguan = () => {
         </CModalFooter>
       </CModal>
 
-      <CModal visible={showLaporan} onClose={() => setShowLaporan(false)}>
+      <CModal visible={showLaporan} onClose={() => {setShowLaporan(false); setShowModal(true);}}>
         <CModalHeader>
           <h5>Daftar Laporan Harian</h5>
         </CModalHeader>
@@ -92,7 +108,7 @@ const LaporanMingguan = () => {
           {laporan.length > 0 && laporan.map((item, index) => (
             <CAccordion key={index} className='mb-2'>
               <CAccordionItem itemKey={index}>
-                <CAccordionHeader>Laporan Tanggal {item.tanggal}</CAccordionHeader>
+                <CAccordionHeader>Laporan Tanggal {item.tanggal} {item.status == 'valid' ? <CBadge color='success' className='ms-2'>Valid</CBadge> : null }</CAccordionHeader>
                 <CAccordionBody>
                   <CCard className='mb-2'>
                     <CCardBody>
@@ -106,9 +122,11 @@ const LaporanMingguan = () => {
                     </CCardFooter>
                   </CCard>
                   <div className='d-flex justify-content-end'>
-                    <CButton color="primary" onClick={() => setShowLaporan(false)}>
-                      Validasi Laporan
-                    </CButton>
+                    {item.status == 'valid' ? null : (
+                      <CButton color="primary" onClick={() => handleValidasi(item.id)}>
+                        Validasi Laporan
+                      </CButton>
+                    )}
                   </div>
                 </CAccordionBody>
               </CAccordionItem>

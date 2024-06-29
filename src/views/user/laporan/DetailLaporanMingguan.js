@@ -34,7 +34,6 @@ const DetailLaporanMingguan = ({props, setShowModal, setShowLaporan, setLaporan}
   }, []);
 
   const handleDetail = (laporan) => {
-    console.log(laporan);
     setLaporan(laporan);
     setShowModal(false);
     setShowLaporan(true);
