@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { CCard, CCardBody, CCardHeader, CButton, CModal, CModalHeader, CModalBody, CModalFooter, CFormInput, CForm, CBadge, CCardFooter } from '@coreui/react';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
+import CIcon from '@coreui/icons-react'
+import { cilTrash } from '@coreui/icons';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -50,6 +52,22 @@ const UserManagement = () => {
     }
   };
 
+  const handleDelete = async (data) => {
+    const url = data.role ? `http://localhost:8080/user/${data.id}` : `http://localhost:8080/koordinatorKecakapan/${data.id}`;
+    try {
+      const response = await axios.delete(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      fetchUsers();
+      fetchKoordinator();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  }
+
   const columns = [
     {
       name: 'No',
@@ -63,12 +81,12 @@ const UserManagement = () => {
         <>
           {row.nama}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '2px'}}>
-            {row.kecakapan ? row.kecakapan.map(skill => (
-              <CBadge color={skill.warna} key={skill.id}>
+            {row.kecakapan ? row.kecakapan.map((skill,index) => (
+              <CBadge color={skill.warna} key={index}>
                 {skill.nama}
               </CBadge>
             )) : (row.nama_kecakapan ?
-              <CBadge color={row.warna_label} key={row.id_kecakapan}>
+              <CBadge color={row.warna_label}>
                 {row.nama_kecakapan}
               </CBadge> : null)}
           </div>
@@ -105,8 +123,8 @@ const UserManagement = () => {
       name: 'Aksi',
       cell: (row) => (
         <>
-          <CButton size="sm" color="danger" className="m-2">
-            Hapus
+          <CButton size="sm" color="danger" className="m-2 text-white" onClick={() => handleDelete(row)}>
+            <CIcon icon={cilTrash} />
           </CButton>
         </>
       ),

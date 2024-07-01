@@ -53,7 +53,7 @@ const DetailLaporanMingguan = ({props, setShowModal, setShowLaporan, setLaporan}
       {Object.keys(laporanMingguan).map((minggu, index) => (
         <CCard key={index} className="mb-2">
           <button className="btn d-flex justify-content-between align-items-center p-2 ps-3" onClick={() => handleDetail(laporanMingguan[minggu])}>
-            <span className='fw-bold'>Laporan Minggu ke-{minggu}</span>
+            <span className='fw-bold'>Laporan Minggu ke-{parseInt(minggu)+1}</span>
             <CIcon icon={cilChevronRight} />
           </button>
         </CCard>

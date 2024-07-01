@@ -14,7 +14,8 @@ const Charts = () => {
   useEffect(() => {
     setTasks(defaultTasks);
     const fetchTasks = () => {
-      axios.get('http://localhost:8080/target', {
+      const kegiatan_id = localStorage.getItem('kegiatan_id');
+      axios.get(`http://localhost:8080/target/${kegiatan_id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -15,7 +15,7 @@ const LaporanHarian = () => {
   const [laporan, setLaporan] = useState([]);
   const [weeks, setWeeks] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [activeKey, setActiveKey] = useState(1);
+  const [activeKey, setActiveKey] = useState(0);
 
   useEffect(() => {
     const fetchKegiatan = async () => {
@@ -28,12 +28,12 @@ const LaporanHarian = () => {
         setKegiatan(response.data);
         generateWeeks(response.data.tgl_mulai, response.data.tgl_selesai);
         const hitungMinggu = (startDate) => {
-        const start = new Date(startDate);
-        const now = new Date();
-        const diffTime = Math.abs(now - start);
-        const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
-        return diffWeeks;
-      };
+          const start = new Date(startDate);
+          const now = new Date();
+          const diffTime = Math.abs(now - start);
+          const diffWeeks = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7));
+          return diffWeeks;
+        };
       const mingguSejakMulai = hitungMinggu(response.data.tgl_mulai);
       setActiveKey(mingguSejakMulai-1);
       } catch (error) {

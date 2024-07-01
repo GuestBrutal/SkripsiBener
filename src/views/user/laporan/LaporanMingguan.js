@@ -33,13 +33,15 @@ const LaporanMingguan = () => {
 
   useEffect(() => {
     const fetchKegiatan = async () => {
+      const kegiatan_id = localStorage.getItem('kegiatan_id');
       try {
-        const response = await axios.get('http://localhost:8080/daftar_kegiatan', {
+        const response = await axios.get(`http://localhost:8080/daftar_kegiatan/`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-        setKegiatan(response.data);
+        const kegiatan = response.data.filter(item => item.no === kegiatan_id);
+        setKegiatan(kegiatan);
       } catch (error) {
         console.error('Error fetching kegiatan:', error);
       }
