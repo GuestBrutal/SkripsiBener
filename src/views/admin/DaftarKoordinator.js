@@ -34,7 +34,7 @@ const DaftarKoordinator = ({props}) => {
   };
 
   const fetchKoordinator = async () => {
-    const url = `http://localhost:8080/koordinatorKecakapan/kegiatan/${selectedKegiatan.no}`;
+    const url = `http://localhost:8080/showKoordinatorByKegiatan/${selectedKegiatan.no}`;
     try {
       const response = await axios.get(url, {
         headers: {

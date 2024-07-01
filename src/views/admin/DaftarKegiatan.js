@@ -33,9 +33,11 @@ const DaftarKegiatan = () => {
   const [pendaftar, setPendaftar] = useState([]);
   const [relawan, setRelawan] = useState([]);
   const [ketuaDropdown, setKetuaDropdown] = useState([]);
+  const [provinsiOptions, setProvinsiOptions] = useState([]);
 
   useEffect(() => {
     fetchData();
+    setProvinsiOptions(provinsiData.data.map(provinsi => ({ value: provinsi.name, label: provinsi.name })));
   }, []);
 
   const fetchData = async () => {
@@ -363,15 +365,7 @@ const DaftarKegiatan = () => {
             <CFormInput type="date" id="tgl_mulai" required value={kegiatanBaru.tgl_mulai} onChange={handleChange} />
 
             <CFormLabel htmlFor="selesai">Tanggal Selesai</CFormLabel>
-            <CFormInput type="date" id="tgl_selesai" required value={kegiatanBaru.tgl_selesai} onChange={handleChange} />
-
-            <CFormLabel htmlFor="status">Status</CFormLabel>
-            <CFormSelect id="status" required value={kegiatanBaru.status} onChange={handleChange}>
-              <option value="">Pilih status kegiatan</option>
-              <option value="Dalam Proses">Dalam Proses</option>
-              <option value="Selesai">Selesai</option>
-              <option value="Dibatalkan">Dibatalkan</option>
-            </CFormSelect>
+            <CFormInput type="date" id="tgl_selesai" required value={kegiatanBaru.tgl_selesai} onChange={handleChange} min={kegiatanBaru?.tgl_mulai ? new Date(new Date(kegiatanBaru.tgl_mulai).getTime() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : new Date(new Date().getTime() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]} />
 
             <CFormLabel htmlFor="ketua">Ketua Tim</CFormLabel>
               <Select
@@ -388,6 +382,7 @@ const DaftarKegiatan = () => {
           <CButton color="secondary" onClick={() => setModalTambah(false)}>Batal</CButton>
         </CModalFooter>
       </CModal>
+
       <CModal visible={modalEdit} onClose={() => setModalEdit(false)}>
         <CModalHeader closeButton>Edit Kegiatan</CModalHeader>
         <CModalBody>
@@ -401,11 +396,11 @@ const DaftarKegiatan = () => {
             <CFormLabel htmlFor="lokasi"> Lokasi </CFormLabel>
             <Select
               id="lokasi"
-              options={provinsiData.data.map(provinsi => ({ value: provinsi.name, label: provinsi.name }))}
-              onChange={selectedOption => setKegiatanBaru({ ...kegiatanBaru, lokasi: selectedOption.value })}
+              options={provinsiOptions}
+              onChange={selectedOption => setSelectedKegiatan({ ...selectedKegiatan, lokasi: selectedOption.value })}
               isSearchable={true}
               placeholder="Pilih Lokasi"
-              defaultValue={selectedKegiatan?.lokasi}
+              defaultValue={provinsiOptions.find(option => option.value === selectedKegiatan?.lokasi)}
             />
 
             <CFormLabel htmlFor="anggaran">Anggaran</CFormLabel>

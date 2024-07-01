@@ -87,7 +87,10 @@ const DaftarTarget = ({target,setTarget}) => {
       {target.map((kategori, index) => (
         <CCard key={index} className='mb-3'>
           <CCardHeader className='d-flex justify-content-between'>
-            <h4>{kategori.nama_target}</h4>
+            <div className='d-flex align-items-center'>
+              <span className='fw-bold me-2 fs-5'>{kategori.nama_target}</span>
+              <span className='text-muted fw-bold' style={{ fontSize: '0.85 rem' }}>{new Date(kategori.target_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })} - {new Date(kategori.target_selesai).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
+            </div>
             <div className='d-flex'>
               {showInput && kategoriId == kategori.no && (
                 <>
