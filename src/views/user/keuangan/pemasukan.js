@@ -23,7 +23,7 @@ const Pemasukan = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = localStorage.getItem('role') === 'koordinator' ? 'https://smrapiii.000webhostapp.com/koordinatorKecakapan/' : 'https://smrapiii.000webhostapp.com/user/';
+        const url = localStorage.getItem('role') === 'koordinator' ? 'http://localhost:8080/koordinatorKecakapan/' : 'http://localhost:8080/user/';
         const response = await axios.get(url+localStorage.getItem('UID'), {
           headers: {
             'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ const Pemasukan = () => {
           },
         });
         setKegiatan(response.data.kegiatan_id);
-        const pemasukan = await axios.get('https://smrapiii.000webhostapp.com/pemasukan/'+response.data.kegiatan_id, {
+        const pemasukan = await axios.get('http://localhost:8080/pemasukan/'+response.data.kegiatan_id, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -135,7 +135,7 @@ const Pemasukan = () => {
         jumlah: parseInt(jumlah),
         id_kegiatan: parseInt(kegiatan),
       };
-      const response = await axios.post('https://smrapiii.000webhostapp.com/pemasukan', newEntry, {
+      const response = await axios.post('http://localhost:8080/pemasukan', newEntry, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -166,7 +166,7 @@ const Pemasukan = () => {
         id_kegiatan : id_kegiatan
       };
       console.log(updatedEntry);
-      const response = await axios.put(`https://smrapiii.000webhostapp.com/pemasukan/${selectedData.no}`, updatedEntry, {
+      const response = await axios.put(`http://localhost:8080/pemasukan/${selectedData.no}`, updatedEntry, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -184,7 +184,7 @@ const Pemasukan = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://smrapiii.000webhostapp.com/pemasukan/${id}`, {
+      await axios.delete(`http://localhost:8080/pemasukan/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,

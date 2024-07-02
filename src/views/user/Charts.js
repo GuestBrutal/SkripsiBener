@@ -15,7 +15,7 @@ const Charts = () => {
     setTasks(defaultTasks);
     const fetchTasks = () => {
       const kegiatan_id = localStorage.getItem('kegiatan_id');
-      axios.get(`https://smrapiii.000webhostapp.com/target/${kegiatan_id}`, {
+      axios.get(`http://localhost:8080/target/${kegiatan_id}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

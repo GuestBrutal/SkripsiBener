@@ -15,7 +15,7 @@ const UserManagement = () => {
   }, []);
 
   const fetchUsers = async () => {
-    const url = 'https://smrapiii.000webhostapp.com/user';
+    const url = 'http://localhost:8080/user';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -34,7 +34,7 @@ const UserManagement = () => {
   };
 
   const fetchKoordinator = async () => {
-    const url = 'https://smrapiii.000webhostapp.com/koordinatorKecakapan';
+    const url = 'http://localhost:8080/koordinatorKecakapan';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -53,7 +53,7 @@ const UserManagement = () => {
   };
 
   const handleDelete = async (data) => {
-    const url = data.role ? `https://smrapiii.000webhostapp.com/user/${data.id}` : `https://smrapiii.000webhostapp.com/koordinatorKecakapan/${data.id}`;
+    const url = data.role ? `http://localhost:8080/user/${data.id}` : `http://localhost:8080/koordinatorKecakapan/${data.id}`;
     try {
       const response = await axios.delete(url, {
         headers: {
