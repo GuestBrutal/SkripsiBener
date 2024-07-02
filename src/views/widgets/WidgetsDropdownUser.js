@@ -62,7 +62,7 @@ const WidgetsDropdownUser = () => {
   useEffect(() => {
     const fetchDataTarget = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/target/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapiii.000webhostapp.com/target/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }

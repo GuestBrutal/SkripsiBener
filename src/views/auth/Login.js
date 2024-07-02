@@ -36,7 +36,7 @@ const Login = () => {
       setFormData({ ...formData, error: 'Email Tidak Valid!' });
       return;
     }
-    const url = 'http://localhost:8080/login/';
+    const url = 'https://smrapiii.000webhostapp.com/login/';
     try {
       const response = await axios.post(url, { email, password });
       if (response.data.status) {

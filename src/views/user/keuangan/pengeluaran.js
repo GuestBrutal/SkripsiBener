@@ -24,7 +24,7 @@ const Pengeluaran = () => {
 
   const fetchData = async () => {
       try {
-        const url = localStorage.getItem('role') === 'koordinator' ? 'http://localhost:8080/koordinatorKecakapan/' : 'http://localhost:8080/user/';
+        const url = localStorage.getItem('role') === 'koordinator' ? 'https://smrapiii.000webhostapp.com/koordinatorKecakapan/' : 'https://smrapiii.000webhostapp.com/user/';
         const response = await axios.get(url+localStorage.getItem('UID'), {
           headers: {
             'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const Pengeluaran = () => {
           },
         });
         setKegiatan(response.data.kegiatan_id);
-        const pengeluaran = await axios.get('http://localhost:8080/pengeluaran/'+response.data.kegiatan_id, {
+        const pengeluaran = await axios.get('https://smrapiii.000webhostapp.com/pengeluaran/'+response.data.kegiatan_id, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -148,7 +148,7 @@ const Pengeluaran = () => {
       formData.delete('nota_pengeluaran');
     }
     try {
-      const response = await axios.post('http://localhost:8080/pengeluaran', formData, {
+      const response = await axios.post('https://smrapiii.000webhostapp.com/pengeluaran', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -189,7 +189,7 @@ const Pengeluaran = () => {
       qty_pengeluaran: parseInt(event.target.banyakbarang.value),
       total_pengeluaran: parseInt(event.target.harga.value) * parseInt(event.target.banyakbarang.value),
     };
-    axios.post(`http://localhost:8080/updatePengeluaran/${editItem.id}`, updatedPengeluaran, {
+    axios.post(`https://smrapiii.000webhostapp.com/updatePengeluaran/${editItem.id}`, updatedPengeluaran, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -206,7 +206,7 @@ const Pengeluaran = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:8080/pengeluaran/${id}`, {
+    axios.delete(`https://smrapiii.000webhostapp.com/pengeluaran/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -339,7 +339,7 @@ const Pengeluaran = () => {
       <CModal visible={modalNotaVisible} onClose={() => setModalNotaVisible(false)}>
         <CModalHeader closeButton>Lihat Nota</CModalHeader>
         <CModalBody>
-          {selectedNota ? <img src={`http://localhost:8080/nota/${selectedNota}`} alt="Nota" style={{ width: '100%' }} /> : <p>Nota tidak tersedia.</p>}
+          {selectedNota ? <img src={`https://smrapiii.000webhostapp.com/nota/${selectedNota}`} alt="Nota" style={{ width: '100%' }} /> : <p>Nota tidak tersedia.</p>}
         </CModalBody>
       </CModal>
     </CCard>

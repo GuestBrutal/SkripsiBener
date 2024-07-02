@@ -33,7 +33,7 @@ const Setting = () => {
     const userId = localStorage.getItem('UID');
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:8080/user/${userId}`, {
+        const { data } = await axios.get(`https://smrapiii.000webhostapp.com/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

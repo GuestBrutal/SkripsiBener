@@ -35,7 +35,7 @@ const LaporanMingguan = () => {
     const fetchKegiatan = async () => {
       const kegiatan_id = localStorage.getItem('kegiatan_id');
       try {
-        const response = await axios.get(`http://localhost:8080/daftar_kegiatan/`, {
+        const response = await axios.get(`https://smrapiii.000webhostapp.com/daftar_kegiatan/`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -51,7 +51,7 @@ const LaporanMingguan = () => {
 
   const handleValidasi = async (id) => {
     try {
-        const response = await axios.post(`http://localhost:8080/validasiLaporan/${id}`, {
+        const response = await axios.post(`https://smrapiii.000webhostapp.com/validasiLaporan/${id}`, {
           status: 'valid'
         }, {
           headers: {
