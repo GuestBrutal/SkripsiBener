@@ -14,7 +14,7 @@ const WidgetsDropdownAdmin = () => {
   useEffect(() => {
     const fetchDataKegiatan = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//daftar_kegiatan', {
+        const response = await axios.get('https://smrapi.my.id/daftar_kegiatan', {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`

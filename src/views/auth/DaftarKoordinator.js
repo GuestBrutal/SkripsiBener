@@ -51,7 +51,7 @@ const DaftarKoordinator = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = 'http://smrapi.my.id//kecakapan';
+    const url = 'https://smrapi.my.id/kecakapan';
     const fetchKecakapanOptions = async () => {
       try {
         const response = await axios.get(url,{
@@ -174,7 +174,7 @@ const DaftarKoordinator = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = 'http://smrapi.my.id//koordinatorKecakapan/';
+    const url = 'https://smrapi.my.id/koordinatorKecakapan/';
     try {
       const response = await axios.post(url, formData, {
         headers: {

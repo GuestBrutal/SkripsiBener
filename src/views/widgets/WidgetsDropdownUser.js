@@ -62,7 +62,7 @@ const WidgetsDropdownUser = () => {
   useEffect(() => {
     const fetchDataTarget = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//target/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapi.my.id/target/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }

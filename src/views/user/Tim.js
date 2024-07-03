@@ -13,7 +13,7 @@ const Tim = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//tim/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapi.my.id/tim/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,

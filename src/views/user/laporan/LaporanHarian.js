@@ -20,7 +20,7 @@ const LaporanHarian = () => {
   useEffect(() => {
     const fetchKegiatan = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//daftar_kegiatan/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapi.my.id/daftar_kegiatan/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -42,7 +42,7 @@ const LaporanHarian = () => {
     };
     const fetchTarget = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//target/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapi.my.id/target/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -54,7 +54,7 @@ const LaporanHarian = () => {
     };
     const fetchLaporan = async () => {
       try {
-        const response = await axios.get('http://smrapi.my.id//laporan_harian/' + localStorage.getItem('kegiatan_id'), {
+        const response = await axios.get('https://smrapi.my.id/laporan_harian/' + localStorage.getItem('kegiatan_id'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -137,7 +137,7 @@ const LaporanHarian = () => {
       formData.append('tugas', selectedTugas.map(t => t.value));
       formData.append('tanggal', selectedDay.date.toISOString().split('T')[0]);
       formData.append('deskripsi_laporan', event.target.description.value);
-      const response = await axios.post('http://smrapi.my.id//laporan_harian', formData, {
+      const response = await axios.post('https://smrapi.my.id/laporan_harian', formData, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -159,7 +159,7 @@ const LaporanHarian = () => {
       formData.append('id_kegiatan', localStorage.getItem('kegiatan_id'));
       formData.append('tugas', selectedTugas.map(t => t.value));
       formData.append('deskripsi_laporan', event.target.description.value);
-      const response = await axios.put('http://smrapi.my.id//laporan_harian/'+selectedDay.laporanHarian[0].id, formData, {
+      const response = await axios.put('https://smrapi.my.id/laporan_harian/'+selectedDay.laporanHarian[0].id, formData, {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`,

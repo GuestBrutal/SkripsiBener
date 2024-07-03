@@ -35,7 +35,7 @@ const AppContent = () => {
 
   const handleExtend = async () => {
     try {
-      const response = await axios.get('http://smrapi.my.id//refresh_token', {
+      const response = await axios.get('https://smrapi.my.id/refresh_token', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
