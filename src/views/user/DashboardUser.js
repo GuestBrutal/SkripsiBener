@@ -61,7 +61,7 @@ const DashboardUser = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rabResponse = await axios.get('https://smrapiii.000webhostapp.com/rab_realisasi/'+localStorage.getItem('kegiatan_id'),{
+        const rabResponse = await axios.get('https://smrapi.my.id/rab_realisasi/'+localStorage.getItem('kegiatan_id'),{
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -85,12 +85,12 @@ const DashboardUser = () => {
 
 const exportToExcel = async () => {
   try {
-    const pemasukanResponse = await axios.get('https://smrapiii.000webhostapp.com/pemasukan/' + localStorage.getItem('kegiatan_id'), {
+    const pemasukanResponse = await axios.get('https://smrapi.my.id/pemasukan/' + localStorage.getItem('kegiatan_id'), {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     });
-    const pengeluaranResponse = await axios.get('https://smrapiii.000webhostapp.com/pengeluaran/' + localStorage.getItem('kegiatan_id'), {
+    const pengeluaranResponse = await axios.get('https://smrapi.my.id/pengeluaran/' + localStorage.getItem('kegiatan_id'), {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }

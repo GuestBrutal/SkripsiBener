@@ -15,7 +15,7 @@ const DaftarKoordinator = ({props}) => {
   }, []);
 
   const fetchKecakapan = async () => {
-    const url = 'https://smrapiii.000webhostapp.com/kecakapan';
+    const url = 'https://smrapi.my.id/kecakapan';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -34,7 +34,7 @@ const DaftarKoordinator = ({props}) => {
   };
 
   const fetchKoordinator = async () => {
-    const url = `https://smrapiii.000webhostapp.com/showKoordinatorByKegiatan/${selectedKegiatan.no}`;
+    const url = `https://smrapi.my.id/showKoordinatorByKegiatan/${selectedKegiatan.no}`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -54,7 +54,7 @@ const DaftarKoordinator = ({props}) => {
 
 
   const updateKoordinator = async (e,kecakapan) => {
-    const url = `https://smrapiii.000webhostapp.com/koordinatorKecakapan/${e.value}`;
+    const url = `https://smrapi.my.id/koordinatorKecakapan/${e.value}`;
     try {
       const response = await axios.put(url, {
         kegiatan_id: selectedKegiatan.no,

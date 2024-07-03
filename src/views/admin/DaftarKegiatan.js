@@ -11,7 +11,7 @@ import DaftarKoordinator from './DaftarKoordinator';
 
 
 const DaftarKegiatan = () => {
-  const url = 'https://smrapiii.000webhostapp.com/daftar_kegiatan';
+  const url = 'https://smrapi.my.id/daftar_kegiatan';
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [modalTambah, setModalTambah] = useState(false);
@@ -56,7 +56,7 @@ const DaftarKegiatan = () => {
         }));
         setPendaftar(Pendaftar);
         setFilteredData(response.data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
-        const valid =  await axios.get('https://smrapiii.000webhostapp.com/user/', {
+        const valid =  await axios.get('https://smrapi.my.id/user/', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
