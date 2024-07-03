@@ -21,7 +21,7 @@ const Profile = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem('UID');
-    axios.get(`https://smrapi.my.id/user/${userId}`, {
+    axios.get(`http://smrapi.my.id//user/${userId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

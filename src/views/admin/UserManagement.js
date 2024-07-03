@@ -15,7 +15,7 @@ const UserManagement = () => {
   }, []);
 
   const fetchUsers = async () => {
-    const url = 'https://smrapi.my.id/user';
+    const url = 'http://smrapi.my.id//user';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -34,7 +34,7 @@ const UserManagement = () => {
   };
 
   const fetchKoordinator = async () => {
-    const url = 'https://smrapi.my.id/koordinatorKecakapan';
+    const url = 'http://smrapi.my.id//koordinatorKecakapan';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -53,7 +53,7 @@ const UserManagement = () => {
   };
 
   const handleDelete = async (data) => {
-    const url = data.role ? `https://smrapi.my.id/user/${data.id}` : `https://smrapi.my.id/koordinatorKecakapan/${data.id}`;
+    const url = data.role ? `http://smrapi.my.id//user/${data.id}` : `http://smrapi.my.id//koordinatorKecakapan/${data.id}`;
     try {
       const response = await axios.delete(url, {
         headers: {

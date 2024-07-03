@@ -27,7 +27,7 @@ const Relawan = () => {
     const fetchActiveActivities = async (data) => {
       try {
         const userId = localStorage.getItem('UID');
-        const response = await axios.get(`https://smrapi.my.id/user/${userId}`, {
+        const response = await axios.get(`http://smrapi.my.id//user/${userId}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -42,7 +42,7 @@ const Relawan = () => {
 
     const fetchActivities = async () => {
       try {
-        const response = await axios.get('https://smrapi.my.id/daftar_kegiatan', {
+        const response = await axios.get('http://smrapi.my.id//daftar_kegiatan', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -79,7 +79,7 @@ const Relawan = () => {
     setActivities(updatedActivities);
     const register = async () => {
       try {
-        const response = await axios.post('https://smrapi.my.id/user/register_kegiatan', {
+        const response = await axios.post('http://smrapi.my.id//user/register_kegiatan', {
           user_id: localStorage.getItem('UID'),
           kegiatan_id: activityId
         }, {

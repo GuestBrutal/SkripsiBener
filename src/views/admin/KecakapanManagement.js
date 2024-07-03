@@ -17,7 +17,7 @@ const KecakapanManagement = () => {
   }, []);
 
   const fetchKecakapan = async () => {
-    const url = 'https://smrapi.my.id/kecakapan';
+    const url = 'http://smrapi.my.id//kecakapan';
     try {
       const response = await axios.get(url, {
         headers: {
@@ -42,7 +42,7 @@ const KecakapanManagement = () => {
   };
 
   const handleUpdate = async () => {
-    const url = `https://smrapi.my.id/kecakapan/${editKecakapan.id}`;
+    const url = `http://smrapi.my.id//kecakapan/${editKecakapan.id}`;
     try {
       const response = await axios.put(url, editKecakapan, {
         headers: {
@@ -62,7 +62,7 @@ const KecakapanManagement = () => {
   };
 
   const handleDelete = async (id) => {
-    const url = `https://smrapi.my.id/kecakapan/${id}`;
+    const url = `http://smrapi.my.id//kecakapan/${id}`;
     try {
       const response = await axios.delete(url, {
         headers: {
@@ -89,7 +89,7 @@ const KecakapanManagement = () => {
   };
 
   const handleAdd = async () => {
-    const url = 'https://smrapi.my.id/kecakapan';
+    const url = 'http://smrapi.my.id//kecakapan';
     try {
       const response = await axios.post(url, newKecakapan, {
         headers: {

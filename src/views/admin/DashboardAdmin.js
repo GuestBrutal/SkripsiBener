@@ -71,7 +71,7 @@ const DashboardAdmin = () => {
   const [dataPengeluaran, setDataPengeluaran] = useState([]);
 
   useEffect(() => {
-    axios.get('https://smrapi.my.id/pengeluaran',{
+    axios.get('http://smrapi.my.id//pengeluaran',{
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -86,7 +86,7 @@ const DashboardAdmin = () => {
 
 const exportToExcel = async () => {
   try {
-    const pengeluaranResponse = await axios.get('https://smrapi.my.id/pengeluaran/', {
+    const pengeluaranResponse = await axios.get('http://smrapi.my.id//pengeluaran/', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
