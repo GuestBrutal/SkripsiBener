@@ -13,7 +13,7 @@ const DaftarTarget = ({target,setTarget}) => {
 
 
   const deleteTugas = async (tugas) => {
-    const url = `http://localhost:8080/daftar_tugas/${tugas.id_tugas}`;
+    const url = `https://smrapiii.000webhostapp.com/daftar_tugas/${tugas.id_tugas}`;
     const response = await axios.delete(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ const DaftarTarget = ({target,setTarget}) => {
   }
 
   const tambahTugas = async (kategori) => {
-    const url = `http://localhost:8080/daftar_tugas/`;
+    const url = `https://smrapiii.000webhostapp.com/daftar_tugas/`;
     const response = await axios.post(url, {
       target_id: kategoriId,
       nama_tugas: namaTugasBaru,

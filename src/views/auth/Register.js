@@ -51,7 +51,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = 'http://localhost:8080/kecakapan';
+    const url = 'https://smrapiii.000webhostapp.com/kecakapan';
     const fetchKecakapanOptions = async () => {
       try {
         const response = await axios.get(url,{
@@ -174,7 +174,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = 'http://localhost:8080/user/';
+    const url = 'https://smrapiii.000webhostapp.com/user/';
     try {
       const response = await axios.post(url, formData, {
         headers: {
