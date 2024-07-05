@@ -56,7 +56,7 @@ const DaftarKegiatan = () => {
         }));
         setPendaftar(Pendaftar);
         setFilteredData(response.data.filter(item => item.nama_kegiatan.toLowerCase().includes(searchText.toLowerCase())));
-        const valid =  await axios.get('https://smrapi.my.id/user/', {
+        const valid =  await axios.get('https://smrapi.my.id/user', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`

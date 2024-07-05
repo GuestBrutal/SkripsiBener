@@ -28,7 +28,7 @@ const DaftarTarget = ({target,setTarget}) => {
   }
 
   const tambahTugas = async (kategori) => {
-    const url = `https://smrapi.my.id/daftar_tugas/`;
+    const url = `https://smrapi.my.id/daftar_tugas`;
     const response = await axios.post(url, {
       target_id: kategoriId,
       nama_tugas: namaTugasBaru,
